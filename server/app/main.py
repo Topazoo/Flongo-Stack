@@ -2,16 +2,16 @@
 from flongo_framework.application import Application
 
 # Configured App Routes / Endpoints
-from routing import APP_ROUTES
+from .routing import APP_ROUTES
 
 # Configured App Settings
-from settings import SETTINGS
+from .settings import SETTINGS
 
 # Configured App Database Indices
-from database.indices import INDICES
+from .database.indices import INDICES
 
 # Configured App Database Fixtures
-from database.fixtures import FIXTURES
+from .database.fixtures import FIXTURES
 
 
 # Create application
