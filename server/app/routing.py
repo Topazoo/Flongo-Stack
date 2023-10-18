@@ -30,6 +30,7 @@ APP_ROUTES = App_Routes(
                 response=API_Message_Response("Logged out!"),
             )
         ),
+        permissions=Route_Permissions(DELETE=['user', 'admin']),
         log_level=LOG_LEVELS.DEBUG
     ),
 
