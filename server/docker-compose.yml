@@ -1,0 +1,54 @@
+version: '3'
+services:
+  server:
+    restart: unless-stopped
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      # App Settings
+      APP_HOST: '${APP_HOST-0.0.0.0}'
+      APP_PORT: ${APP_PORT-8080}
+      APP_ENV: '${APP_ENV-development}'
+      APP_DEBUG_MODE: '${APP_DEBUG_MODE-True}'
+      APP_REQUIRES_MONGODB: '${APP_REQUIRES_MONGODB-False}'
+      APP_LOG_LEVEL: '${APP_LOG_LEVEL-debug}'
+      APP_CONFIG_LOG_LEVEL: '${APP_CONFIG_LOG_LEVEL-debug}'
+      APP_LOG_BOOT_EVENTS: '${APP_LOG_BOOT_EVENTS-True}'
+      APP_CORS_ORIGINS: ${APP_CORS_ORIGINS}
+
+      # JWT Settings
+      JWT_SECRET_KEY: '${JWT_SECRET_KEY-Change me!}'
+      JWT_ACCESS_TOKEN_EXPIRATION_SECS: ${JWT_ACCESS_TOKEN_EXPIRATION_SECS-300}
+      JWT_REFRESH_ACCESS_TOKEN_WITHIN_SECS: ${JWT_REFRESH_ACCESS_TOKEN_WITHIN_SECS-60}
+      JWT_REFRESH_TOKEN_EXPIRATION_SECS: ${JWT_REFRESH_TOKEN_EXPIRATION_SECS-300}
+      JWT_ONLY_ALLOW_HTTPS: '${JWT_ONLY_ALLOW_HTTPS-False}'
+      JWT_ENABLE_CSRF_PROTECTION: '${JWT_ENABLE_CSRF_PROTECTION-False}'
+
+      # MongoDB Settings
+      MONGODB_HOST: '${MONGODB_HOST-mongodb}'
+      MONGODB_PORT: ${MONGODB_PORT-27017}
+      MONGODB_USERNAME: '${MONGODB_USERNAME}'
+      MONGODB_PASSWORD: '${MONGODB_PASSWORD}'
+      MONGODB_DEFAULT_DATABASE: '${MONGODB_DEFAULT_DATABASE-db}'
+      MONGODB_CONNECTION_TIMEOUT: ${MONGODB_CONNECTION_TIMEOUT-5000}
+      MONGODB_LOG_LEVEL: '${MONGODB_LOG_LEVEL-debug}'
+
+      # Sentry Settings
+      SENTRY_DSN: '${SENTRY_DSN}'
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE-1.0}
+      SENTRY_PROFILES_SAMPLE_RATE: ${SENTRY_PROFILES_SAMPLE_RATE-1.0}
+
+      # Gunicorn Settings
+      GUNICORN_WORKERS: ${GUNICORN_WORKERS-1}
+      GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT-30}
+    depends_on:
+      - mongodb
+    
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    command: ["mongod", "--logpath", "/dev/null"]
