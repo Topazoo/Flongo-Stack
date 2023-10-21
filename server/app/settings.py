@@ -7,9 +7,7 @@ SETTINGS = App_Settings(
         env="local", 
         debug_mode=True, 
         log_level=LOG_LEVELS.DEBUG,
-        config_log_level=LOG_LEVELS.DEBUG,
-        # Local Development
-        cors_origins=["http://localhost:*", "http://0.0.0.0:*"]
+        config_log_level=LOG_LEVELS.DEBUG
     ),
     mongodb=MongoDB_Settings(
         log_level=LOG_LEVELS.DEBUG
