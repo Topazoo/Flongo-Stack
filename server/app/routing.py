@@ -45,6 +45,7 @@ APP_ROUTES = App_Routes(
             PATCH='admin',
             DELETE='admin'
         ),
+        collection_name='config',
         log_level=LOG_LEVELS.DEBUG
     ),
 )
