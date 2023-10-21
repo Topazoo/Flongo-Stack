@@ -39,7 +39,6 @@ APP_ROUTES = App_Routes(
         url='/config',
         handler=Default_Route_Handler(),
         permissions=Route_Permissions(
-            GET='admin',
             POST='admin',
             PUT='admin',
             PATCH='admin',
