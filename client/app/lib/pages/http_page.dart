@@ -32,7 +32,7 @@ class _HTTP_PageState extends State<HTTP_Page> {
       },
       onError: (response) {
         setState(() {
-          data = 'Failed to fetch data';
+          data = 'Failed to fetch data: ${response.body}';
           isLoading = false;
         });
       }
