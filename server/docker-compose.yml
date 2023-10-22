@@ -45,6 +45,8 @@ services:
       GUNICORN_TIMEOUT: ${GUNICORN_TIMEOUT-30}
     depends_on:
       - mongodb
+    volumes:
+      - .:/app
     
   mongodb:
     image: mongo:latest
