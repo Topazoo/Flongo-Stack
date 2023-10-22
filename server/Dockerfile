@@ -27,7 +27,7 @@ COPY entrypoint.sh /entrypoint.sh
 WORKDIR /app
 
 # Set environment variables with default values
-ENV FLASK_APP=app/main.py
+ENV FLASK_APP=app.main:get_app
 ENV APP_HOST=0.0.0.0
 ENV APP_PORT=8080
 
