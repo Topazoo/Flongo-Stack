@@ -4,7 +4,7 @@ Template Repo with a Flongo-Framework backend and Flutter frontend
 
 ## Server
 
-### Building w/ Docker
+### Building the Server w/ Docker
 
 From the `server` directory run:
 
@@ -12,7 +12,7 @@ From the `server` directory run:
 docker build -t <your_image_name> .
 ```
 
-### Running w/ Docker
+### Running the Server w/ Docker
 
 Run the server image on port 8080 from the Docker GUI or with
 
@@ -43,6 +43,32 @@ docker-compose up --force-recreate
 ```
 
 If you are running the application with the environment configured to `sandbox` or higher, the application will run using gunicorn. If you are running with it configured in a lower environment, the application will run via Flask directly and will allow hot-reloads when code is changed
+
+## Client
+
+### Building the Client w/ Docker
+
+#### Create a `.env` file in the client/app directory
+
+(_client/app/.env_)
+
+```sh
+APP_API_URL=http://localhost:8080
+```
+
+From the `client` directory run:
+
+```sh
+docker build -t <your_image_name> .
+```
+
+### Running the Client w/ Docker
+
+Run the server image on port 8080 from the Docker GUI or with
+
+```sh
+docker run -p 80:80 <your_image_name>
+```
 
 ### Building the Client + Server + MongoDB w/ Docker Compose
 
