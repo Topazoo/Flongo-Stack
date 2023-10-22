@@ -21,12 +21,12 @@ APP_ROUTES = App_Routes(
     Route(
         url='/authenticate',
         handler=Route_Handler(
-            POST=lambda request: Authentication_Util.set_identity_cookie(
+            POST=lambda request: Authentication_Util.set_identity_cookies(
                 response=API_Message_Response("Logged in!"),
                 _id="Test Username",
                 roles="admin"
             ),
-            DELETE=lambda request: Authentication_Util.unset_identity_cookie(
+            DELETE=lambda request: Authentication_Util.unset_identity_cookies(
                 response=API_Message_Response("Logged out!"),
             )
         ),
@@ -39,6 +39,7 @@ APP_ROUTES = App_Routes(
         url='/config',
         handler=Default_Route_Handler(),
         permissions=Route_Permissions(
+            GET='admin',
             POST='admin',
             PUT='admin',
             PATCH='admin',
