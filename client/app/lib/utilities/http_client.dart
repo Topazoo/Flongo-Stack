@@ -1,23 +1,51 @@
 import 'dart:async';
 
+import 'http_clients/http_client_factory.dart';
+import 'services/cookie_service_factory.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 
+
 class HTTPClient {
   static final env = dotenv.env;
   final String baseUrl;
+  final http.Client _client = getCustomClient();
   final Duration timeoutDuration;
-  Map<String, String> headers = {
+  static Map<String, String> headers = {
     'accept': 'application/json',
   };
 
+  static String? _cookie;
+
   HTTPClient(String url, {String? csrfToken})
-      : baseUrl = '${env['APP_API_URL']}/$url',
+        : baseUrl = '${env['APP_API_URL']}/${url.startsWith("/") ? url.substring(1) : url}',
         timeoutDuration = Duration(milliseconds: int.parse(env['APP_API_TIMEOUT_MS'] ?? '3000')) {
+
     if (csrfToken != null) {
       headers['X-CSRF-TOKEN'] = csrfToken;
     }
+
+    if (_cookie != null) {
+      setCookie(_cookie!);
+    }
+  }
+
+  static void deAuthenticate() {
+    // TODO - Clear from browser?
+    _cookie = null;
+    headers.remove('cookie');
+  }
+
+  void setCookie(String cookie) {
+    _cookie = cookie;
+    headers['cookie'] = cookie;
+  }
+
+  static bool isAuthenticated() {
+    // If there is a cookie set for the application or an identity cookie present in
+    // the browser cookies
+    return _cookie != null || getIdentityCookie() != null;
   }
 
   Future<void> _requestWrapper(Function requestFunc, {Function? onSuccess, Function? onError}) async {
@@ -36,6 +64,13 @@ class HTTPClient {
   }
 
   void _handleResponse(http.Response response, Function? onSuccess, Function? onError) {
+    if (response.statusCode == 401) {
+      // Invalidate the cookie and set authenticated to false for 401 Unauthorized response
+      deAuthenticate();
+    } else {
+      _updateCookie(response);
+    }
+
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (onSuccess != null) onSuccess(response);
     } else {
@@ -43,16 +78,25 @@ class HTTPClient {
     }
   }
 
+  void _updateCookie(http.Response response) {
+    String? rawCookie = response.headers['set-cookie'];
+    if (rawCookie != null) {
+      int index = rawCookie.indexOf(';');
+      String cookie = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      setCookie(cookie);
+    }
+  }
+
   Future<void> get({Map<String, String>? queryParams, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
       var uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
-      return http.get(uri, headers: headers);
+      return _client.get(uri, headers: headers);
     }, onSuccess: onSuccess, onError: onError);
   }
 
   Future<void> post({Map<String, dynamic>? body, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
-      return http.post(
+      return _client.post(
         Uri.parse(baseUrl),
         headers: headers,
         body: json.encode(body),
@@ -62,7 +106,7 @@ class HTTPClient {
 
   Future<void> put({Map<String, dynamic>? body, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
-      return http.put(
+      return _client.put(
         Uri.parse(baseUrl),
         headers: headers,
         body: json.encode(body),
@@ -72,7 +116,7 @@ class HTTPClient {
 
   Future<void> patch({Map<String, dynamic>? body, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
-      return http.patch(
+      return _client.patch(
         Uri.parse(baseUrl),
         headers: headers,
         body: json.encode(body),
@@ -83,7 +127,7 @@ class HTTPClient {
   Future<void> delete({Map<String, String>? queryParams, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
       var uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
-      return http.delete(uri, headers: headers);
+      return _client.delete(uri, headers: headers);
     }, onSuccess: onSuccess, onError: onError);
   }
 }
