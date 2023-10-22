@@ -1,0 +1,3 @@
+String? getIdentityCookie() {
+  return null;
+}
