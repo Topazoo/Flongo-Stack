@@ -48,6 +48,14 @@ If you are running the application with the environment configured to `sandbox` 
 
 Since the client depends on the server (which depends on MongoDB), you can use Docker Compose to start the Dockerized client application in conjuction with Dockerized Server and MongoDB instances
 
+#### Create a `.env` file in client/app
+
+(_client/app/.env_)
+
+```sh
+APP_API_URL=http://localhost:8080
+```
+
 From the `compose` directory containing `docker-compose.yml`, run:
 
 ```sh
