@@ -1,11 +1,10 @@
 import 'dart:html';
+import 'package:app/utilities/mutliplatform/cookie_manager/mobile_identity_cookie_manager.dart';
+export 'package:app/utilities/mutliplatform/cookie_manager/mobile_identity_cookie_manager.dart' show parseIdentityAndRole;
 
-String? getIdentityCookie() {
+Map<String, dynamic>? getIdentityCookie() {
   if (document.cookie!.contains('identity_cookie=')) {
-    return document.cookie
-        ?.split('; ')
-        .firstWhere((row) => row.startsWith('identity_cookie='))
-        .split('=')[1];
+    return parseIdentityAndRole(document.cookie);
   }
 
   return null;
