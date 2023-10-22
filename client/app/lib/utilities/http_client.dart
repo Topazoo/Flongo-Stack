@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'http_clients/http_client_factory.dart';
-import 'services/cookie_service_factory.dart';
+import 'mutliplatform/base_http_client_factory.dart';
+import 'mutliplatform/cookie_service_factory.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
