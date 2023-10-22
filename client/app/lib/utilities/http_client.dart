@@ -17,6 +17,8 @@ class HTTPClient {
   };
 
   static String? _cookie;
+  static String? _identity;
+  static List<String>? _roles;
 
   HTTPClient(String url, {String? csrfToken})
         : baseUrl = '${env['APP_API_URL']}/${url.startsWith("/") ? url.substring(1) : url}',
@@ -27,17 +29,20 @@ class HTTPClient {
     }
 
     if (_cookie != null) {
-      setCookie(_cookie!);
+      _setCookie(_cookie!);
     }
   }
 
   static void deAuthenticate() {
-    // TODO - Clear from browser?
     _cookie = null;
+    _identity = null;
+    _roles = null;
+
+    // TODO - Clear from browser?
     headers.remove('cookie');
   }
 
-  void setCookie(String cookie) {
+  void _setCookie(String cookie) {
     _cookie = cookie;
     headers['cookie'] = cookie;
   }
@@ -45,7 +50,32 @@ class HTTPClient {
   static bool isAuthenticated() {
     // If there is a cookie set for the application or an identity cookie present in
     // the browser cookies
-    return _cookie != null || getIdentityCookie() != null;
+
+    if (_cookie != null) {
+      return true;
+    }
+
+    if (_identity != null) {
+      return true;
+    }
+
+    // Lazy load for web browsers
+    return _setIdentityData(getIdentityCookie());
+  }
+
+  static bool _setIdentityData(Map<String, dynamic>? identityData){
+    if (identityData != null) {
+      _identity = identityData['identity'];
+      _roles = identityData['roles'];
+
+      return true;
+    }
+
+    return false;
+  }
+
+  static bool isAdminAuthenticated() {
+    return (isAuthenticated() && (_roles!.contains("admin") || _roles!.contains("Admin")));
   }
 
   Future<void> _requestWrapper(Function requestFunc, {Function? onSuccess, Function? onError}) async {
@@ -82,10 +112,11 @@ class HTTPClient {
     String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      String cookie = (index == -1) ? rawCookie : rawCookie.substring(0, index);
-      setCookie(cookie);
+      _setCookie((index == -1) ? rawCookie : rawCookie.substring(0, index));
+      _setIdentityData(parseIdentityAndRole(rawCookie));
     }
   }
+
 
   Future<void> get({Map<String, String>? queryParams, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
