@@ -1,9 +1,10 @@
 import 'package:app/pages/http_page.dart';
+import 'package:app/styles/theme.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends HTTP_Page {
 
-  const LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
+  LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
       : super(key: key, apiURL:apiURL, authenticationRequired: authenticationRequired);
 
   @override
@@ -54,7 +55,8 @@ class _LoginPageState extends HTTP_PageState {
               const SizedBox(height: 16.0),
               TextFormField(
                 controller: _passwordController,
-                decoration: const InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(
+                  labelText: 'Password'),
                 obscureText: true,
                 validator: (value) => value!.isEmpty ? 'Password required' : null,
               ),
@@ -66,6 +68,9 @@ class _LoginPageState extends HTTP_PageState {
                   }
                 },
                 child: const Text('Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.accentTextColor,
+                ),
               ),
             ],
           ),

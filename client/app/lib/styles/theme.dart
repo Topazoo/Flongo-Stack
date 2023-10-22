@@ -9,7 +9,7 @@ class AppTheme {
   // Colors
   static const Color primaryColor = Colors.blue;
   static Color lightBackgroundColor = Colors.blue.shade50;
-  static Color accentTextColor = Colors.blue.shade900;
+  static Color accentTextColor = Colors.blueGrey.shade800;
   static Color darkTextColor = Colors.black;  
 
   // Icon Colors

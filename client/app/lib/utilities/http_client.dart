@@ -78,6 +78,14 @@ class HTTPClient {
     return (isAuthenticated() && (_roles!.contains("admin") || _roles!.contains("Admin")));
   }
 
+  static String? getIdentity() {
+    return _identity;
+  }
+
+  static String getRoles() {
+    return _roles.toString();
+  }
+
   Future<void> _requestWrapper(Function requestFunc, {Function? onSuccess, Function? onError}) async {
     try {
       var response = await requestFunc().timeout(timeoutDuration);
