@@ -51,7 +51,6 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
     if (HTTPClient.isAuthenticated()) {
       return [
         const CircleAvatar(
-          backgroundImage: NetworkImage('URL_TO_USER_IMAGE'),
           radius: 20,
         ),
         const SizedBox(width: 10),
@@ -68,9 +67,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
           UserAccountsDrawerHeader(
             accountName: Text(HTTPClient.getIdentity() ?? 'Guest'),
             accountEmail: Text(HTTPClient.isAuthenticated() ? "Roles: ${HTTPClient.getRoles()}" : 'Please Login'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(HTTPClient.isAuthenticated() ? 'URL_TO_USER_IMAGE' : 'DEFAULT_IMAGE_URL'),
-            ),
+            currentAccountPicture: const CircleAvatar(),
           ),
           ListTile(
             leading: const Icon(Icons.home),
