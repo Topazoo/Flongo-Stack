@@ -76,7 +76,9 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/home');
+              if (!['/', '/home'].contains(ModalRoute.of(context)?.settings.name)) {
+                Navigator.of(context).pushReplacementNamed('/home');
+              }
             },
           ),
           if (HTTPClient.isAdminAuthenticated()) ...[
@@ -84,7 +86,9 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
               leading: const Icon(Icons.settings),
               title: const Text('Config'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/config');
+                if (ModalRoute.of(context)?.settings.name != '/config') {
+                  Navigator.of(context).pushReplacementNamed('/config');
+                }
               },
             ),
           ],
