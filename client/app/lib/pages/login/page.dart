@@ -1,5 +1,6 @@
 import 'package:app/pages/http_page.dart';
 import 'package:app/styles/theme.dart';
+import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends HTTP_Page {
@@ -17,27 +18,10 @@ class _LoginPageState extends HTTP_PageState {
   final _passwordController = TextEditingController();
   String? _errorMessage;
 
-  Future<void> _authenticate() async {
-    await client.post(
-      body: {
-        'username': _usernameController.text,
-        'password': _passwordController.text,
-      },
-      onSuccess: (response) {
-          Navigator.pushReplacementNamed(context, '/home');
-      },
-      onError: (response) {
-        setState(() {
-          _errorMessage = 'Failed to authenticate: ${response.body}';
-        });
-      }
-    );
-  }
-
   @override
   Widget buildContent(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(200.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -60,17 +44,25 @@ class _LoginPageState extends HTTP_PageState {
                 obscureText: true,
                 validator: (value) => value!.isEmpty ? 'Password required' : null,
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 50.0),
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    _authenticate();
+                    HTTPClient('/authenticate').login(
+                      _usernameController.text,
+                      _passwordController.text,
+                      (response) =>  Navigator.pushReplacementNamed(context, '/home'),
+                      (response) => setState(() {
+                        _errorMessage = 'Failed to authenticate: ${response.body}';
+                      })
+                    );
                   }
                 },
-                child: const Text('Login'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.accentTextColor,
+                  minimumSize: const Size(200, 65)
                 ),
+                child: const Text('Login'),
               ),
             ],
           ),

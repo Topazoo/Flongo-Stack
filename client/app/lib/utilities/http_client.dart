@@ -24,6 +24,7 @@ class HTTPClient {
         : baseUrl = '${env['APP_API_URL']}/${url.startsWith("/") ? url.substring(1) : url}',
         timeoutDuration = Duration(milliseconds: int.parse(env['APP_API_TIMEOUT_MS'] ?? '3000')) {
 
+    // TODO - Store this - it won't work this way
     if (csrfToken != null) {
       headers['X-CSRF-TOKEN'] = csrfToken;
     }
@@ -38,7 +39,6 @@ class HTTPClient {
     _identity = null;
     _roles = null;
 
-    // TODO - Clear from browser?
     headers.remove('cookie');
   }
 
@@ -84,6 +84,41 @@ class HTTPClient {
 
   static String getRoles() {
     return _roles.toString();
+  }
+
+  Future<void> login(String username, String password, Function? onSuccess, Function? onError) async {
+    await post(
+      body: {
+        'username': username,
+        'password': password,
+      },
+      onSuccess: (response) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          onSuccess?.call(response);
+        } else {
+          onError?.call(response);
+        }
+      },
+      onError: (response) {
+        onError?.call(response);
+      }
+    );
+  }
+
+  Future<void> logout(Function? onSuccess, Function? onError) async {
+    await delete(
+      onSuccess: (response) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          HTTPClient.deAuthenticate();
+          onSuccess?.call(response);
+        } else {
+          onError?.call(response);
+        }
+      },
+      onError: (response) {
+        onError?.call(response);
+      }
+    );
   }
 
   Future<void> _requestWrapper(Function requestFunc, {Function? onSuccess, Function? onError}) async {

@@ -92,8 +92,10 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () {
-              HTTPClient.deAuthenticate();
-              Navigator.of(context).pushReplacementNamed('/');
+              HTTPClient('/authenticate').logout(
+                (response) => Navigator.of(context).pushReplacementNamed('/'),
+                (response) => {}
+              );
             },
           ),
         ],
