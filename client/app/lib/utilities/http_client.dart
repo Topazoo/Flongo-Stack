@@ -12,7 +12,7 @@ class HTTPClient {
   final String baseUrl;
   final http.Client _client = getCustomClient();
   final Duration timeoutDuration;
-  static Map<String, String> headers = {
+  static final Map<String, String> _headers = {
     'accept': 'application/json',
   };
 
@@ -24,8 +24,9 @@ class HTTPClient {
         : baseUrl = '${env['APP_API_URL']}/${url.startsWith("/") ? url.substring(1) : url}',
         timeoutDuration = Duration(milliseconds: int.parse(env['APP_API_TIMEOUT_MS'] ?? '3000')) {
 
+    // TODO - Store this - it won't work this way
     if (csrfToken != null) {
-      headers['X-CSRF-TOKEN'] = csrfToken;
+      _headers['X-CSRF-TOKEN'] = csrfToken;
     }
 
     if (_cookie != null) {
@@ -38,13 +39,12 @@ class HTTPClient {
     _identity = null;
     _roles = null;
 
-    // TODO - Clear from browser?
-    headers.remove('cookie');
+    _headers.remove('cookie');
   }
 
   void _setCookie(String cookie) {
     _cookie = cookie;
-    headers['cookie'] = cookie;
+    _headers['cookie'] = cookie;
   }
 
   static bool isAuthenticated() {
@@ -86,6 +86,41 @@ class HTTPClient {
     return _roles.toString();
   }
 
+  Future<void> login(String username, String password, Function? onSuccess, Function? onError) async {
+    await post(
+      body: {
+        'username': username,
+        'password': password,
+      },
+      onSuccess: (response) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          onSuccess?.call(response);
+        } else {
+          onError?.call(response);
+        }
+      },
+      onError: (response) {
+        onError?.call(response);
+      }
+    );
+  }
+
+  Future<void> logout(Function? onSuccess, Function? onError) async {
+    await delete(
+      onSuccess: (response) {
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          deAuthenticate();
+          onSuccess?.call(response);
+        } else {
+          onError?.call(response);
+        }
+      },
+      onError: (response) {
+        onError?.call(response);
+      }
+    );
+  }
+
   Future<void> _requestWrapper(Function requestFunc, {Function? onSuccess, Function? onError}) async {
     try {
       var response = await requestFunc().timeout(timeoutDuration);
@@ -125,11 +160,22 @@ class HTTPClient {
     }
   }
 
+  Map<String, String> setJSONContentTypeHeader(Map<String, dynamic>? body) {
+    if (body != null) {
+      Map<String, String> headers = Map<String, String>.from(_headers);
+      headers['content-type'] = 'application/json';
+
+      return headers;
+    }
+
+    return _headers;
+  }
+
 
   Future<void> get({Map<String, String>? queryParams, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
       var uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
-      return _client.get(uri, headers: headers);
+      return _client.get(uri, headers: _headers);
     }, onSuccess: onSuccess, onError: onError);
   }
 
@@ -137,7 +183,7 @@ class HTTPClient {
     return _requestWrapper(() {
       return _client.post(
         Uri.parse(baseUrl),
-        headers: headers,
+        headers: setJSONContentTypeHeader(body),
         body: json.encode(body),
       );
     }, onSuccess: onSuccess, onError: onError);
@@ -147,7 +193,7 @@ class HTTPClient {
     return _requestWrapper(() {
       return _client.put(
         Uri.parse(baseUrl),
-        headers: headers,
+        headers: setJSONContentTypeHeader(body),
         body: json.encode(body),
       );
     }, onSuccess: onSuccess, onError: onError);
@@ -157,7 +203,7 @@ class HTTPClient {
     return _requestWrapper(() {
       return _client.patch(
         Uri.parse(baseUrl),
-        headers: headers,
+        headers: setJSONContentTypeHeader(body),
         body: json.encode(body),
       );
     }, onSuccess: onSuccess, onError: onError);
@@ -166,7 +212,7 @@ class HTTPClient {
   Future<void> delete({Map<String, String>? queryParams, Function? onSuccess, Function? onError}) {
     return _requestWrapper(() {
       var uri = Uri.parse(baseUrl).replace(queryParameters: queryParams);
-      return _client.delete(uri, headers: headers);
+      return _client.delete(uri, headers: _headers);
     }, onSuccess: onSuccess, onError: onError);
   }
 }

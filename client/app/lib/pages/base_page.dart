@@ -51,7 +51,6 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
     if (HTTPClient.isAuthenticated()) {
       return [
         const CircleAvatar(
-          backgroundImage: NetworkImage('URL_TO_USER_IMAGE'),
           radius: 20,
         ),
         const SizedBox(width: 10),
@@ -68,15 +67,15 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
           UserAccountsDrawerHeader(
             accountName: Text(HTTPClient.getIdentity() ?? 'Guest'),
             accountEmail: Text(HTTPClient.isAuthenticated() ? "Roles: ${HTTPClient.getRoles()}" : 'Please Login'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(HTTPClient.isAuthenticated() ? 'URL_TO_USER_IMAGE' : 'DEFAULT_IMAGE_URL'),
-            ),
+            currentAccountPicture: const CircleAvatar(),
           ),
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
             onTap: () {
-              Navigator.of(context).pushReplacementNamed('/home');
+              if (!['/', '/home'].contains(ModalRoute.of(context)?.settings.name)) {
+                Navigator.of(context).pushReplacementNamed('/home');
+              }
             },
           ),
           if (HTTPClient.isAdminAuthenticated()) ...[
@@ -84,7 +83,9 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
               leading: const Icon(Icons.settings),
               title: const Text('Config'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/config');
+                if (ModalRoute.of(context)?.settings.name != '/config') {
+                  Navigator.of(context).pushReplacementNamed('/config');
+                }
               },
             ),
           ],
@@ -92,8 +93,10 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             leading: const Icon(Icons.logout),
             title: const Text('Logout'),
             onTap: () {
-              HTTPClient.deAuthenticate();
-              Navigator.of(context).pushReplacementNamed('/');
+              HTTPClient('/authenticate').logout(
+                (response) => Navigator.of(context).pushReplacementNamed('/'),
+                (response) => {}
+              );
             },
           ),
         ],

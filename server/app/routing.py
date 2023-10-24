@@ -23,7 +23,7 @@ APP_ROUTES = App_Routes(
         handler=Route_Handler(
             POST=lambda request: Authentication_Util.set_identity_cookies(
                 response=API_Message_Response("Logged in!"),
-                _id="Test Username",
+                _id=request.payload.get("username", "Test Username"),
                 roles="admin"
             ),
             DELETE=lambda request: Authentication_Util.unset_identity_cookies(
