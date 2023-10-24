@@ -109,7 +109,7 @@ class HTTPClient {
     await delete(
       onSuccess: (response) {
         if (response.statusCode >= 200 && response.statusCode < 300) {
-          HTTPClient.deAuthenticate();
+          deAuthenticate();
           onSuccess?.call(response);
         } else {
           onError?.call(response);
