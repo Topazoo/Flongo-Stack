@@ -9,14 +9,7 @@ class HTTP_Page extends BasePage {
   final String dataPath = 'data';
   final bool fetchOnLoad = false;
 
-  const HTTP_Page({
-    Key? key, 
-    bool authenticationRequired = false, 
-    }) : 
-    super(
-      key: key, 
-      authenticationRequired: authenticationRequired
-    );
+  const HTTP_Page({Key? key}): super(key: key);
 
   @override
   HTTP_PageState createState() => HTTP_PageState();

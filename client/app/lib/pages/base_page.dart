@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class BasePage extends StatefulWidget {
-  final bool authenticationRequired;
+  final bool authenticationRequired = false;
 
-  const BasePage({Key? key, this.authenticationRequired = false}) : super(key: key);
+  const BasePage({Key? key}) : super(key: key);
 }
 
 abstract class BasePageState<T extends BasePage> extends State<T> {

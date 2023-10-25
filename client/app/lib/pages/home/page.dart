@@ -3,9 +3,10 @@ import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends BasePage {
+  @override
+  final bool authenticationRequired = true;
 
-  const HomePage({Key? key, bool authenticationRequired = false})
-    : super(key: key, authenticationRequired: authenticationRequired);
+  const HomePage({Key? key}): super(key: key);
 
   @override
   HomePageState createState() => HomePageState();

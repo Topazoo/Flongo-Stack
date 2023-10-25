@@ -9,16 +9,11 @@ class ConfigPage extends JSON_Page {
   @override
   final bool fetchOnLoad = true;
   @override
+  final bool authenticationRequired = true;
+  @override
   final JSON_To_Widget_Schema schema = const Config_JSON_To_Widget_Schema();
 
-  const ConfigPage({
-    Key? key,
-    bool authenticationRequired = false, 
-    }) :
-    super(
-      key: key,
-      authenticationRequired: authenticationRequired
-    );
+  const ConfigPage({Key? key}): super(key: key);
 
   @override
   JSON_PageState createState() => JSON_PageState();

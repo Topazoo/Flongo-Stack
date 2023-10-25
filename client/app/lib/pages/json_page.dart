@@ -5,14 +5,7 @@ import 'package:flutter/material.dart';
 class JSON_Page extends HTTP_Page {
   final JSON_To_Widget_Schema schema = const JSON_To_Widget_Schema();
 
-  const JSON_Page({
-    Key? key,
-    bool authenticationRequired = false, 
-    }) :
-    super(
-      key: key,
-      authenticationRequired: authenticationRequired,
-    );
+  const JSON_Page({Key? key}): super(key: key);
 
   @override
   JSON_PageState createState() => JSON_PageState();

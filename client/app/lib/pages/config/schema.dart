@@ -17,7 +17,7 @@ class Config_JSON_To_Widget_Schema extends JSON_To_Widget_Schema {
       itemBuilder: (BuildContext context, int index) {
         var item = dataList[index];
         return ListTile(
-          leading: Icon(Icons.info),
+          leading: const Icon(Icons.info),
           title: Text(item['name'] ?? ''),
           subtitle: Text('${item['value']}'),
         );
