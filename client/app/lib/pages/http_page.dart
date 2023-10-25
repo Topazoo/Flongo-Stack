@@ -26,13 +26,13 @@ class API_PageState<T extends API_Page> extends BasePageState<T> {
     
     if (widget.fetchOnLoad) {
       isLoading = true;
-      _fetchData();
+      fetchData();
     } else {
       isLoading = false;
     }
   }
 
-  Future<void> _fetchData() async {
+  Future<void> fetchData() async {
     await client.get(
         onSuccess: (response) {
           dynamic responseData;

@@ -13,6 +13,7 @@ class JSON_Page extends API_Page {
 }
 
 class JSON_PageState extends API_PageState<JSON_Page> {
+
   void _handleDelete(int? index) {
     if (index != null) {
       if (data is! List) {
@@ -63,26 +64,97 @@ class JSON_PageState extends API_PageState<JSON_Page> {
       });
     }
   }
-  
 
-  Future<void> updateItem(String apiURL, BuildContext context, Map<String, dynamic> item, int? index) async {
-    final Map<String, dynamic> newVal = Map.from(item);
-    newVal['value'] = "UPDATED"; // Get this value from a modal using `item` along with any other fields
+  Future<void> updateItem(String apiURL, Map<String, dynamic> item, int? index, {String idKey='_id'}) async {
+    final controllers = <String, TextEditingController>{};
 
+     Map<String, dynamic> updatedItem = Map<String, dynamic>.from(item);
+     String? _id = updatedItem.remove(idKey);
+
+    // Initialize controllers with item values
+    updatedItem.forEach((key, value) {
+      controllers[key] = TextEditingController(text: value.toString());
+    });
+
+    bool? isUpdated = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Update Item'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: updatedItem.keys.map((key) {
+              return TextField(
+                controller: controllers[key],
+                decoration: InputDecoration(labelText: key),
+              );
+            }).toList(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(dialogContext).pop(null); // Return 'false' to indicate that update was cancelled.
+            },
+          ),
+          TextButton(
+            child: const Text('Update'),
+            onPressed: () async {
+              final finalItem = {...updatedItem};
+              if (_id != null) {
+                finalItem[idKey] = _id;
+              }
+
+              controllers.forEach((key, controller) {
+                finalItem[key] = convertToRawType(controller.text);
+              });
+
+              bool success = await _updateData(apiURL, finalItem, index);
+              Navigator.of(dialogContext).pop(success); // Return the success status of the update.
+            },
+          ),
+        ],
+      ),
+    );
+
+    if (isUpdated != null && isUpdated) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(const SnackBar(content: Text('Updated Successfully')));
+    } else if (isUpdated != null && !isUpdated) {
+      final messenger = ScaffoldMessenger.of(context);
+      messenger.showSnackBar(const SnackBar(content: Text('Failed to Update')));
+    }
+  }
+
+  Future<bool> _updateData(String apiURL, Map<String, dynamic> updatedItem, int? index) async {
+    bool success = false;
     await HTTPClient(apiURL).patch(
-      body: newVal,
+      body: updatedItem,
       onSuccess: (response) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Updated Successfully')));
-        _handleUpdate(index, newVal);
+        _handleUpdate(index, updatedItem);
+        success = true;
       },
       onError: (error) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to Update')));
+        success = false;
       },
     );
+    return success;
+  }
+
+  dynamic convertToRawType(String value) {
+    if (value.toLowerCase() == 'true') {
+      return true;
+    } else if (value.toLowerCase() == 'false') {
+      return false;
+    } else if (int.tryParse(value) != null) {
+      return int.parse(value);
+    } else {
+      return value;
+    }
   }
 
   @override
-  Widget getPageWidget(BuildContext context) => 
-    widget.schema.widgetFromJSON(context, data, widget.apiURL, deleteItem, updateItem);
+  Widget getPageWidget(BuildContext context) => widget.schema.widgetFromJSON(context, data, widget.apiURL, deleteItem, updateItem);
 }
 

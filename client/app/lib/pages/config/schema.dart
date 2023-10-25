@@ -27,7 +27,7 @@ class Config_JSON_To_Widget_Schema extends JSON_To_Widget_Schema {
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () => updateItem!(apiURL, context, item, index),
+                  onPressed: () => updateItem!(apiURL, item, index),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
