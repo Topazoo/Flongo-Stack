@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class LoginPage extends HTTP_Page {
 
-  LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
+  const LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
       : super(key: key, apiURL:apiURL, authenticationRequired: authenticationRequired);
 
   @override
@@ -19,7 +19,7 @@ class _LoginPageState extends HTTP_PageState {
   String? _errorMessage;
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget getPageWidget(BuildContext context) {
     return Padding(
         padding: const EdgeInsets.all(200.0),
         child: Form(

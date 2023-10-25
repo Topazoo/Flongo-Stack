@@ -1,23 +1,25 @@
 import 'package:app/pages/base_page.dart';
 import 'package:app/utilities/http_client.dart';
 import 'dart:convert';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+
+import 'package:flutter/material.dart';
 
 class HTTP_Page extends BasePage {
   final String apiURL;
   final String dataPath;
   final bool fetchOnLoad;
 
-  HTTP_Page({
+  const HTTP_Page({
     Key? key, 
     required this.apiURL,
     this.dataPath = 'data',
     bool authenticationRequired = false, 
-    this.fetchOnLoad = false,
-    }) : super(
+    this.fetchOnLoad = false
+    }) : 
+    super(
       key: key, 
       authenticationRequired: authenticationRequired
-    ); 
+    );
 
   @override
   HTTP_PageState createState() => HTTP_PageState();
@@ -26,7 +28,6 @@ class HTTP_Page extends BasePage {
 class HTTP_PageState extends BasePageState<HTTP_Page> {
   late HTTPClient client;
   dynamic data;
-  bool isLoading = true;
 
   @override
   void initState() {
@@ -34,7 +35,10 @@ class HTTP_PageState extends BasePageState<HTTP_Page> {
     client = HTTPClient(widget.apiURL);
     
     if (widget.fetchOnLoad) {
+      isLoading = true;
       _fetchData();
+    } else {
+      isLoading = false;
     }
   }
 
@@ -62,29 +66,5 @@ class HTTP_PageState extends BasePageState<HTTP_Page> {
   }
 
   @override
-  Widget buildContent(BuildContext context) {
-    Widget dynamicWidget = const CircularProgressIndicator();
-
-    if (isLoading) {
-      return dynamicWidget;
-    }
-
-    // if (widget.schema != null && data != null) {
-    //   if (data is List) {
-    //     dynamicWidget = JsonWidgetData.fromDynamic(widget.schema?.autoGenerateSchemaList(data as List<dynamic>)).build(
-    //         context: context,
-    //     );
-    //     print(widget.schema?.autoGenerateSchemaList(data as List<dynamic>));
-    //   }
-    //   if (data is Map) {
-    //     dynamicWidget = JsonWidgetData.fromDynamic(widget.schema?.autoGenerateSchemaMap(data as Map<String, dynamic>)).build(
-    //         context: context,
-    //     );
-    //   }
-    //} else {
-      dynamicWidget = Text(data != null ? data.toString() : 'No data found');
-    //}
-
-    return dynamicWidget;
-  }
+  Widget getPageWidget(BuildContext context) => Text(data != null ? data.toString() : 'No data found');
 }

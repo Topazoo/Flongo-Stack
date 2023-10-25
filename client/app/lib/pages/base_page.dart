@@ -11,6 +11,7 @@ abstract class BasePage extends StatefulWidget {
 
 abstract class BasePageState<T extends BasePage> extends State<T> {
   static final env = dotenv.env;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -24,7 +25,19 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   }
 
   @protected
-  Widget buildContent(BuildContext context);
+  Widget getPageWidget(BuildContext context);
+
+  @protected
+  Widget getPageLoadingWidget(BuildContext context) => const CircularProgressIndicator();
+
+  @protected
+  Widget _getPageWidget(BuildContext context) {
+    if (isLoading) {
+      return getPageLoadingWidget(context);
+    }
+
+    return getPageWidget(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +54,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
         ),
         actions: _buildAppBarActions(context),
       ),
-      body: Center(child: buildContent(context)),
+      body: Center(child: _getPageWidget(context)),
       drawer: _buildNavBar(context),
       bottomNavigationBar: _buildFooter(),
     );
