@@ -7,7 +7,7 @@ class LoginPage extends API_Page {
   @override
   final String apiURL = '/authenticate';
 
-  const LoginPage({Key? key}): super(key: key);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();

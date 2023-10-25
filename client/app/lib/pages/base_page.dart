@@ -6,7 +6,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 abstract class BasePage extends StatefulWidget {
   final bool authenticationRequired = false;
 
-  const BasePage({Key? key}) : super(key: key);
+  const BasePage({super.key});
 }
 
 abstract class BasePageState<T extends BasePage> extends State<T> {

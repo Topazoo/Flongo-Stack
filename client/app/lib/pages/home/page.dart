@@ -6,14 +6,13 @@ class HomePage extends BasePage {
   @override
   final bool authenticationRequired = true;
 
-  const HomePage({Key? key}): super(key: key);
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends BasePageState {
-
   @override
   Widget getPageWidget(BuildContext context) {
     return Text('Welcome Home: ${HTTPClient.getIdentity()}');
