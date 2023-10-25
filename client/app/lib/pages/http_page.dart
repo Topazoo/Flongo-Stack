@@ -1,5 +1,4 @@
 import 'package:app/pages/base_page.dart';
-import 'package:app/schemas/base.dart';
 import 'package:app/utilities/http_client.dart';
 import 'dart:convert';
 import 'package:json_dynamic_widget/json_dynamic_widget.dart';
@@ -8,7 +7,6 @@ class HTTP_Page extends BasePage {
   final String apiURL;
   final String dataPath;
   final bool fetchOnLoad;
-  BaseSchema? schema;
 
   HTTP_Page({
     Key? key, 
@@ -16,14 +14,10 @@ class HTTP_Page extends BasePage {
     this.dataPath = 'data',
     bool authenticationRequired = false, 
     this.fetchOnLoad = false,
-    this.schema,
     }) : super(
       key: key, 
       authenticationRequired: authenticationRequired
-    ) {
-      schema ??= BaseSchema();
-    }
-
+    ); 
 
   @override
   HTTP_PageState createState() => HTTP_PageState();
