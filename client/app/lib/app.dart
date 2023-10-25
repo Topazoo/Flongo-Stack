@@ -1,5 +1,5 @@
+import 'package:app/pages/config/page.dart';
 import 'package:app/pages/home/page.dart';
-import 'package:app/pages/json_page.dart';
 import 'package:app/pages/login/page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -18,9 +18,9 @@ class App extends StatelessWidget {
         primarySwatch: AppTheme.primarySwatch,
       ),
       routes: {
-        '/': (context) => const LoginPage(apiURL: '/authenticate'),
+        '/': (context) => const LoginPage(),
         '/home': (context) => const HomePage(authenticationRequired: true),
-        '/config': (context) => JSON_Page(apiURL: '/config', authenticationRequired: true, fetchOnLoad: true)
+        '/config': (context) => const ConfigPage(authenticationRequired: true)
       },
       initialRoute: '/',
     );

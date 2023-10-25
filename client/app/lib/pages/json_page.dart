@@ -1,30 +1,24 @@
 import 'package:app/pages/http_page.dart';
-import 'package:json_dynamic_widget/json_dynamic_widget.dart';
+import 'package:app/schemas/json_to_widget_schema.dart';
+import 'package:flutter/material.dart';
 
 class JSON_Page extends HTTP_Page {
-  final JsonWidgetRegistry registry;
+  final JSON_To_Widget_Schema schema = const JSON_To_Widget_Schema();
 
-  JSON_Page({
-    Key? key, 
-    required String apiURL,
-    String dataPath = 'data',
+  const JSON_Page({
+    Key? key,
     bool authenticationRequired = false, 
-    bool fetchOnLoad = false,
-    JsonWidgetRegistry? registry,
-    }) : 
-    registry = registry ?? JsonWidgetRegistry.instance,
+    }) :
     super(
       key: key,
-      apiURL: apiURL,
-      dataPath: dataPath,
       authenticationRequired: authenticationRequired,
-      fetchOnLoad: fetchOnLoad
     );
 
   @override
   JSON_PageState createState() => JSON_PageState();
 }
 
-class JSON_PageState extends HTTP_PageState {
-
+class JSON_PageState extends HTTP_PageState<JSON_Page> {
+  @override
+  Widget getPageWidget(BuildContext context) => widget.schema.widgetFromJSON(context, data);
 }

@@ -1,0 +1,25 @@
+import 'package:app/pages/config/schema.dart';
+import 'package:app/pages/json_page.dart';
+import 'package:app/schemas/json_to_widget_schema.dart';
+import 'package:flutter/material.dart';
+
+class ConfigPage extends JSON_Page {
+  @override
+  final String apiURL = '/config';
+  @override
+  final bool fetchOnLoad = true;
+  @override
+  final JSON_To_Widget_Schema schema = const Config_JSON_To_Widget_Schema();
+
+  const ConfigPage({
+    Key? key,
+    bool authenticationRequired = false, 
+    }) :
+    super(
+      key: key,
+      authenticationRequired: authenticationRequired
+    );
+
+  @override
+  JSON_PageState createState() => JSON_PageState();
+}

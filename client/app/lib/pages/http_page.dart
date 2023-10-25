@@ -5,16 +5,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 class HTTP_Page extends BasePage {
-  final String apiURL;
-  final String dataPath;
-  final bool fetchOnLoad;
+  final String apiURL = '/';
+  final String dataPath = 'data';
+  final bool fetchOnLoad = false;
 
   const HTTP_Page({
     Key? key, 
-    required this.apiURL,
-    this.dataPath = 'data',
     bool authenticationRequired = false, 
-    this.fetchOnLoad = false
     }) : 
     super(
       key: key, 
@@ -25,7 +22,7 @@ class HTTP_Page extends BasePage {
   HTTP_PageState createState() => HTTP_PageState();
 }
 
-class HTTP_PageState extends BasePageState<HTTP_Page> {
+class HTTP_PageState<T extends HTTP_Page> extends BasePageState<T> {
   late HTTPClient client;
   dynamic data;
 

@@ -4,9 +4,11 @@ import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends HTTP_Page {
+  @override
+  final String apiURL = '/authenticate';
 
-  const LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
-      : super(key: key, apiURL:apiURL, authenticationRequired: authenticationRequired);
+  const LoginPage({Key? key, bool authenticationRequired = false})
+    : super(key: key, authenticationRequired: authenticationRequired);
 
   @override
   _LoginPageState createState() => _LoginPageState();
