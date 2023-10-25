@@ -3,7 +3,7 @@ import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends HTTP_Page {
+class LoginPage extends API_Page {
   @override
   final String apiURL = '/authenticate';
 
@@ -13,7 +13,7 @@ class LoginPage extends HTTP_Page {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends HTTP_PageState {
+class _LoginPageState extends API_PageState {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();

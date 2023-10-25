@@ -4,18 +4,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-class HTTP_Page extends BasePage {
+class API_Page extends BasePage {
   final String apiURL = '/';
   final String dataPath = 'data';
   final bool fetchOnLoad = false;
 
-  const HTTP_Page({Key? key}): super(key: key);
+  const API_Page({Key? key}): super(key: key);
 
   @override
-  HTTP_PageState createState() => HTTP_PageState();
+  API_PageState createState() => API_PageState();
 }
 
-class HTTP_PageState<T extends HTTP_Page> extends BasePageState<T> {
+class API_PageState<T extends API_Page> extends BasePageState<T> {
   late HTTPClient client;
   dynamic data;
 
