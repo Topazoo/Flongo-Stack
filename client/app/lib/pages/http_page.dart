@@ -49,7 +49,7 @@ class API_PageState<T extends API_Page> extends BasePageState<T> {
         },
         onError: (response) {
           setState(() {
-            data = 'Failed to fetch data: ${response.body}';
+            error = 'Failed to fetch data: ${response.body}';
             isLoading = false;
           });
         });
