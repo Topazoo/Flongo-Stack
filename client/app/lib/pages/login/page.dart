@@ -1,4 +1,4 @@
-import 'package:app/pages/http_page.dart';
+import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';

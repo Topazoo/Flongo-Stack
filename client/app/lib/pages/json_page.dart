@@ -1,4 +1,4 @@
-import 'package:app/pages/http_page.dart';
+import 'package:app/pages/api_page.dart';
 import 'package:app/schemas/json_to_widget_schema.dart';
 import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
