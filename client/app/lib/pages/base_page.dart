@@ -143,6 +143,11 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
 
   List<Widget> _buildFooterChildren() {
     return [
+      Text(
+        '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+      const SizedBox(height: 10),
       Row(
         mainAxisSize: MainAxisSize.min, // Ensures the row takes minimum space required
         children: [
@@ -155,11 +160,6 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             onPressed: () {},
           ),
         ],
-      ),
-      const SizedBox(height: 10), 
-      Text(
-        '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
-        style: const TextStyle(color: Colors.white, fontSize: 14),
       ),
     ];
   }
