@@ -15,9 +15,9 @@ class JSONWidget extends StatefulWidget {
   JSONWidgetState createState() => JSONWidgetState();
 }
 
+
 class JSONWidgetState extends State<JSONWidget> {
-  // Can be a Map (JSON) or List (list of JSON)
-  late dynamic data;
+  late dynamic data; // Can be a Map (JSON) or List (list of JSON)
 
   @override
   void initState() {
@@ -27,43 +27,75 @@ class JSONWidgetState extends State<JSONWidget> {
 
   void filterData(String query) {
     if (data is List) {
-      if (query.isEmpty) {
-        data = widget.data;
-      } else {
-        data = filter(data, query);
-      }
-      setState(() {}); // This is crucial to update the UI with filtered results.
+      setState(() {
+        data = query.isEmpty ? widget.data : filter(data, query);
+      });
     }
   }
 
   List filter(List data, String query) {
-    // Override this for easy searching by JSON field
     return data.where((item) {
       return item['name']?.toLowerCase().contains(query.toLowerCase()) ?? false;
     }).toList();
   }
 
-  void _handleUpdate(int? index, dynamic newData) {
-    if (index != null) {
-      if (data is! List) {
-        throw IndexError.withLength(index, 0, message: "Can't update a non list item by index");
-      }
-      setState(() {
-        data[index] = newData;
-      });
-    } else {
-      if (data is List) {
-        throw IndexError.withLength(0, data.length, message: "Must pass index of item to remove!");
-      }
-      setState(() {
-        data = newData;
-      });
+  Future<void> updateItem(Map<String, dynamic> item, int? index, {String idKey = '_id'}) async {
+    final controllers = <String, TextEditingController>{};
+
+    Map<String, dynamic> updatedItem = Map<String, dynamic>.from(item);
+    updatedItem.forEach((key, value) {
+      controllers[key] = TextEditingController(text: value.toString());
+    });
+
+    bool? isUpdated = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => _buildUpdateDialog(controllers, updatedItem, updatedItem.remove(idKey), index, idKey),
+    );
+
+    if (isUpdated != null) {
+      _showSnackBar(isUpdated ? 'Updated Successfully' : 'Failed to Update');
     }
   }
 
-  Future<bool> _updateData(String apiURL, Map<String, dynamic> updatedItem, int? index) async {
+  AlertDialog _buildUpdateDialog(Map<String, TextEditingController> controllers, Map<String, dynamic> updatedItem, String? _id, int? index, String idKey) {
+    return AlertDialog(
+      title: const Text('Update Item'),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: updatedItem.keys.map((key) {
+            return TextField(
+              controller: controllers[key],
+              decoration: InputDecoration(labelText: key),
+            );
+          }).toList(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('Cancel'),
+          onPressed: () => Navigator.of(context).pop(null),
+        ),
+        TextButton(
+          child: const Text('Update'),
+          onPressed: () async {
+            final finalItem = {...updatedItem, if (_id != null) idKey: _id};
+
+            controllers.forEach((key, controller) {
+              finalItem[key] = _convertToRawType(controller.text);
+            });
+
+            bool success = await _updateData(finalItem, index);
+            Navigator.of(context).pop(success);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<bool> _updateData(Map<String, dynamic> updatedItem, int? index) async {
     bool success = false;
-    await HTTPClient(apiURL).patch(
+    await HTTPClient(widget.apiURL).patch(
       body: updatedItem,
       onSuccess: (response) {
         _handleUpdate(index, updatedItem);
@@ -76,102 +108,46 @@ class JSONWidgetState extends State<JSONWidget> {
     return success;
   }
 
-  Future<void> updateItem(String apiURL, Map<String, dynamic> item, int? index, {String idKey='_id'}) async {
-    final controllers = <String, TextEditingController>{};
-
-     Map<String, dynamic> updatedItem = Map<String, dynamic>.from(item);
-     String? _id = updatedItem.remove(idKey);
-
-    // Initialize controllers with item values
-    updatedItem.forEach((key, value) {
-      controllers[key] = TextEditingController(text: value.toString());
-    });
-
-    bool? isUpdated = await showDialog<bool>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Update Item'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: updatedItem.keys.map((key) {
-              return TextField(
-                controller: controllers[key],
-                decoration: InputDecoration(labelText: key),
-              );
-            }).toList(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(dialogContext).pop(null); // Return 'false' to indicate that update was cancelled.
-            },
-          ),
-          TextButton(
-            child: const Text('Update'),
-            onPressed: () async {
-              final finalItem = {...updatedItem};
-              if (_id != null) {
-                finalItem[idKey] = _id;
-              }
-
-              controllers.forEach((key, controller) {
-                finalItem[key] = convertToRawType(controller.text);
-              });
-
-              bool success = await _updateData(apiURL, finalItem, index);
-              Navigator.of(dialogContext).pop(success); // Return the success status of the update.
-            },
-          ),
-        ],
-      ),
-    );
-
-    if (isUpdated != null && isUpdated) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(const SnackBar(content: Text('Updated Successfully')));
-    } else if (isUpdated != null && !isUpdated) {
-      final messenger = ScaffoldMessenger.of(context);
-      messenger.showSnackBar(const SnackBar(content: Text('Failed to Update')));
-    }
-  }
-
-  void _handleDelete(int? index) {
-    if (index != null) {
-      if (data is! List) {
-        throw IndexError.withLength(index, 0, message: "Can't remove a non list item by index");
-      }
-      setState(() {
-        data.removeAt(index);
-      });
-    } else {
-      if (data is List) {
-        throw IndexError.withLength(0, data.length, message: "Must pass index of item to remove!");
-      }
-      setState(() {
-        data = null;
-      });
-    }
-  }
-
-  Future<void> deleteItem(String apiURL, BuildContext context, Map<String, dynamic> item, int? index) async {
-    await HTTPClient(apiURL).delete(
+  Future<void> deleteItem(Map<String, dynamic> item, int? index) async {
+    await HTTPClient(widget.apiURL).delete(
       queryParams: {
         '_id': item['_id'].toString(),
       },
       onSuccess: (response) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Deleted Successfully')));
         _handleDelete(index);
+        _showSnackBar('Deleted Successfully');
       },
       onError: (response) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to Delete')));
+        _showSnackBar('Failed to Delete');
       },
     );
   }
 
-  dynamic convertToRawType(String value) {
+  void _handleUpdate(int? index, dynamic newData) {
+    setState(() {
+      if (index != null && data is List) {
+        data[index] = newData;
+      } else {
+        data = newData;
+      }
+    });
+  }
+
+  void _handleDelete(int? index) {
+    setState(() {
+      if (index != null && data is List) {
+        data.removeAt(index);
+      } else {
+        data = null;
+      }
+    });
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  dynamic _convertToRawType(String value) {
     if (value.toLowerCase() == 'true') {
       return true;
     } else if (value.toLowerCase() == 'false') {

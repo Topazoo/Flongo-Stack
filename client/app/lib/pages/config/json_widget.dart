@@ -42,11 +42,11 @@ class _ConfigJSONWidgetState extends JSONWidgetState {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
-                      onPressed: () => updateItem(widget.apiURL, item, index),
+                      onPressed: () => updateItem(item, index),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => deleteItem(widget.apiURL, context, item, index),
+                      onPressed: () => deleteItem(item, index),
                     ),
                   ],
                 ),
