@@ -1,18 +1,17 @@
 import 'package:app/pages/api_page.dart';
-import 'package:app/schemas/json_to_widget_schema.dart';
+import 'package:app/widgets/json_widget.dart';
 import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
-class JSON_Page extends API_Page {
-  final JSON_To_Widget_Schema schema = const JSON_To_Widget_Schema();
-
+abstract class JSON_Page<W extends JSONWidget> extends API_Page {
+  
   const JSON_Page({super.key});
 
   @override
-  JSON_PageState createState() => JSON_PageState();
+  JSON_PageState<W> createState() => JSON_PageState<W>();
 }
 
-class JSON_PageState extends API_PageState<JSON_Page> {
+class JSON_PageState<W extends JSONWidget> extends API_PageState<JSON_Page<W>> {
 
   void _handleDelete(int? index) {
     if (index != null) {
@@ -155,6 +154,11 @@ class JSON_PageState extends API_PageState<JSON_Page> {
   }
 
   @override
-  Widget getPageWidget(BuildContext context) => widget.schema.widgetFromJSON(context, data, widget.apiURL, deleteItem, updateItem);
+  Widget getPageWidget(BuildContext context) => JSONWidget(
+    data: data,
+    apiURL: widget.apiURL,
+    deleteItem: deleteItem,
+    updateItem: updateItem,
+  );
 }
 
