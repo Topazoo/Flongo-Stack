@@ -1,8 +1,8 @@
-import 'package:app/widgets/json_widget.dart';
+import 'package:app/widgets/json_list_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class ConfigJSONWidget extends JSONWidget {
+class ConfigJSONWidget extends JSON_List_Widget {
   const ConfigJSONWidget({Key? key, required data, required apiURL, onRefresh}) : super(
     key: key, 
     data: data, 

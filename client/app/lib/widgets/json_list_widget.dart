@@ -2,23 +2,26 @@ import 'package:app/utilities/http_client.dart';
 import 'package:app/widgets/json_widget_mixin.dart';
 import 'package:flutter/material.dart';
 
-class JSON_Widget extends StatefulWidget {
-  final Map data;
+class JSON_List_Widget extends StatefulWidget {
+  final dynamic data;
   final String apiURL;
+  final Future<void> Function()? onRefresh;
 
-  const JSON_Widget({
+  const JSON_List_Widget({
     Key? key,
     required this.data,
-    required this.apiURL
+    required this.apiURL,
+    this.onRefresh
   }) : super(key: key);
 
   @override
-  JSON_WidgetState createState() => JSON_WidgetState();
+  JSONWidgetState createState() => JSONWidgetState();
 }
 
 
-class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
-  late Map data;
+class JSONWidgetState extends State<JSON_List_Widget> with JSON_Widget_Mixin{
+  late List data;
+  String currentSearchTerm = "";
 
   @override
   void initState() {
@@ -26,7 +29,24 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
     data = widget.data;
   }
 
-  Future<void> updateItem(Map item, {String idKey = '_id'}) async {
+  void filterData(String query) {
+    currentSearchTerm = query;
+    setState(() {
+      data = query.isEmpty ? widget.data : filter(data, query);
+    });
+  }
+
+  List filter(List data, String query) {
+    if (query.isEmpty) {
+      return data;
+    }
+
+    return data.where((item) {
+      return item['name']?.toLowerCase().contains(query.toLowerCase()) ?? false;
+    }).toList();
+  }
+
+  Future<void> updateItem(Map item, int index, {String idKey = '_id'}) async {
     final controllers = <String, TextEditingController>{};
 
     Map<String, dynamic> updatedItem = Map<String, dynamic>.from(item);
@@ -36,7 +56,7 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
 
     bool? isUpdated = await showDialog<bool>(
       context: context,
-      builder: (dialogContext) => _buildUpdateDialog(controllers, updatedItem, updatedItem.remove(idKey), idKey),
+      builder: (dialogContext) => _buildUpdateDialog(controllers, updatedItem, updatedItem.remove(idKey), index, idKey),
     );
 
     if (isUpdated != null) {
@@ -44,7 +64,7 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
     }
   }
 
-  AlertDialog _buildUpdateDialog(Map<String, TextEditingController> controllers, Map<String, dynamic> updatedItem, String? _id, String idKey) {
+  AlertDialog _buildUpdateDialog(Map<String, TextEditingController> controllers, Map<String, dynamic> updatedItem, String? _id, int index, String idKey) {
     return AlertDialog(
       title: const Text('Update Item'),
       content: SingleChildScrollView(
@@ -72,7 +92,7 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
               finalItem[key] = convertToRawType(controller.text);
             });
 
-            bool success = await _updateData(finalItem);
+            bool success = await _updateData(finalItem, index);
             Navigator.of(context).pop(success);
           },
         ),
@@ -80,12 +100,12 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
     );
   }
 
-  Future<bool> _updateData(Map<String, dynamic> updatedItem) async {
+  Future<bool> _updateData(Map<String, dynamic> updatedItem, int index) async {
     bool success = false;
     await HTTPClient(widget.apiURL).patch(
       body: updatedItem,
       onSuccess: (response) {
-        setState(() { data = updatedItem; });
+        setState(() { data[index] = updatedItem; });
         success = true;
       },
       onError: (error) {
@@ -95,13 +115,13 @@ class JSON_WidgetState extends State<JSON_Widget> with JSON_Widget_Mixin {
     return success;
   }
 
-  Future<void> deleteItem(Map item) async {
+  Future<void> deleteItem(Map<String, dynamic> item, int index) async {
     await HTTPClient(widget.apiURL).delete(
       queryParams: {
         '_id': item['_id'].toString(),
       },
       onSuccess: (response) {
-        setState(() { data = {}; });
+        setState(() { data.removeAt(index); });
         showSnackBar(context, 'Deleted Successfully');
       },
       onError: (response) {
