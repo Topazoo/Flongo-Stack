@@ -2,7 +2,6 @@ import 'package:app/pages/config/json_widget.dart';
 import 'package:app/pages/json_page.dart';
 import 'package:flutter/material.dart';
 
-
 class ConfigPage extends JSON_Page {
   @override
   final String apiURL = '/config';
@@ -14,16 +13,10 @@ class ConfigPage extends JSON_Page {
   const ConfigPage({super.key});
 
   @override
-  JSON_PageState createState() => JSON_PageState();
+  _ConfigPageState createState() => _ConfigPageState();
 }
 
 class _ConfigPageState extends JSON_PageState {
-  
   @override
-  Widget getPageWidget(BuildContext context) => ConfigJSONWidget(
-    data: data,
-    apiURL: widget.apiURL,
-    deleteItem: deleteItem,
-    updateItem: updateItem,
-  );
+  Widget getPageWidget(BuildContext context) => ConfigJSONWidget(data: data, apiURL: widget.apiURL);
 }

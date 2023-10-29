@@ -2,18 +2,10 @@ import 'package:app/widgets/json_widget.dart';
 import 'package:flutter/material.dart';
 
 class ConfigJSONWidget extends JSONWidget {
-  const ConfigJSONWidget({
-    Key? key,
-    required data,
-    required apiURL,
-    deleteItem,
-    updateItem,
-  }) : super(
+  const ConfigJSONWidget({Key? key, required data, required apiURL}) : super(
     key: key, 
     data: data, 
-    apiURL: apiURL, 
-    deleteItem: deleteItem, 
-    updateItem: updateItem
+    apiURL: apiURL
   );
 
   @override
@@ -50,11 +42,11 @@ class _ConfigJSONWidgetState extends JSONWidgetState {
                   children: [
                     IconButton(
                       icon: const Icon(Icons.edit),
-                      onPressed: () => widget.updateItem!(widget.apiURL, item, index),
+                      onPressed: () => updateItem(widget.apiURL, item, index),
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
-                      onPressed: () => widget.deleteItem!(widget.apiURL, context, item, index),
+                      onPressed: () => deleteItem(widget.apiURL, context, item, index),
                     ),
                   ],
                 ),
