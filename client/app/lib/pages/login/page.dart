@@ -1,6 +1,7 @@
 import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
+import 'package:app/utilities/transitions/key_lock_open_transition.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends API_Page {
@@ -22,7 +23,11 @@ class _LoginPageState extends API_PageState<LoginPage> {
   String? _errorMessage;
 
   void _onLoginSuccess() {
-    Navigator.pushNamed(context, widget.homeURL);
+    Navigator.pushNamed(
+      context, 
+      widget.homeURL, 
+      arguments: {"_animation": KeyToLockOpenPageRoute.transitionsBuilder}
+    );
   }
 
   @override

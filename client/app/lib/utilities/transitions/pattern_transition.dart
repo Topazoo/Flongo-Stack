@@ -1,47 +1,38 @@
 import 'package:flutter/material.dart';
 
-class FuturisticPatternPageRoute extends PageRouteBuilder {
-  final Widget page;
-
-  FuturisticPatternPageRoute({required this.page})
-      : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: const Duration(milliseconds: 750),
-          reverseTransitionDuration: const Duration(milliseconds: 200),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return Stack(
-              children: [
-                // Main content with delayed fade-in
-                FadeTransition(
-                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: const Interval(0.5, 1.0), // Delay fade-in of the page content
-                    ),
-                  ),
-                  child: child,
-                ),
-                // Futuristic pattern transition
-                Positioned.fill(
-                  child: AnimatedBuilder(
-                    animation: animation,
-                    builder: (_, child) {
-                      return Opacity(
-                        opacity: (1.0 - animation.value).clamp(0.0, 1.0),
-                        child: Center(
-                          child: Transform.scale(
-                            scale: animation.value * 1.5, // Scale up the pattern during the animation
-                            child: _FuturisticPatternShape(),
-                          ),
-                        ),
-                      );
-                    },
+class FuturisticPatternTransition {
+  static Widget Function(BuildContext, Animation<double>, Animation<double>, Widget) transitionsBuilder = (context, animation, secondaryAnimation, child) =>
+    Stack(
+      children: [
+        // Main content with delayed fade-in
+        FadeTransition(
+          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: const Interval(0.5, 1.0), // Delay fade-in of the page content
+            ),
+          ),
+          child: child,
+        ),
+        // Futuristic pattern transition
+        Positioned.fill(
+          child: AnimatedBuilder(
+            animation: animation,
+            builder: (_, child) {
+              return Opacity(
+                opacity: (1.0 - animation.value).clamp(0.0, 1.0),
+                child: Center(
+                  child: Transform.scale(
+                    scale: animation.value * 1.5, // Scale up the pattern during the animation
+                    child: _FuturisticPatternShape(),
                   ),
                 ),
-              ],
-            );
-          },
-        );
+              );
+            },
+          ),
+        ),
+      ],
+    );
 }
 
 class _FuturisticPatternShape extends StatelessWidget {

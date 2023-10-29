@@ -11,24 +11,50 @@ class App extends StatelessWidget {
 
   const App({Key? key}) : super(key: key);
 
+  PageRoute buildRoute(String url, Map args, Widget page){
+    // Apply animation if passed
+    if (args.containsKey('_animation')) {
+      return PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => page,
+        settings: RouteSettings(name: url),
+        transitionsBuilder: args['_animation'],
+        transitionDuration: Duration(milliseconds: args['_animation_duration'] ?? 1200),
+      );
+    }
+
+    return MaterialPageRoute(
+      builder: (context) => page,
+      settings: RouteSettings(name: url)
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String appName = env['APP_NAME'] ?? 'App Name';
-    LoginPage loginPage = const LoginPage();
 
     return MaterialApp(
       title: appName,
       theme: ThemeData(
         primarySwatch: AppTheme.primarySwatch,
       ),
-      routes: {
-        '/_splash': (context) => SplashScreen(appName: appName),
+      onGenerateRoute: (RouteSettings settings) {
+        Map routeArgs = (settings.arguments is Map) ? settings.arguments as Map : {};
 
-        '/': (context) => loginPage,
-        '/home': (context) => const HomePage(),
-        '/config': (context) => const ConfigPage()
+        switch (settings.name) {
+          case '/_splash': 
+            return buildRoute('/_splash', routeArgs, SplashScreen(appName: appName));
+          case '/': 
+            return buildRoute('/', routeArgs, const LoginPage());
+          case '/home': 
+            return buildRoute('/home', routeArgs, const HomePage());
+          case '/config':
+            return buildRoute('/config', routeArgs, const ConfigPage());
+
+          default:
+            return null;
+        }
       },
-      initialRoute: '/_splash',
+      initialRoute: '/_splash'
     );
   }
 }

@@ -28,7 +28,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     // Navigate to the next page after a delay
     Timer(const Duration(milliseconds: 500), () {
-      Navigator.of(context).pushReplacementNamed(widget.baseURL);
+      Navigator.of(context).pushReplacementNamed(
+        widget.baseURL,
+        arguments: {'_animation': FadePageTransition.transitionsBuilder}
+      );
     });
   }
 

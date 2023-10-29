@@ -1,56 +1,47 @@
 import 'package:flutter/material.dart';
 
-class FiveDotsPageRoute extends PageRouteBuilder {
-  final Widget page;
-
-  FiveDotsPageRoute({required this.page})
-      : super(
-          pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: const Duration(milliseconds: 750),
-          reverseTransitionDuration: const Duration(milliseconds: 200),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return Stack(
-              children: [
-                // Main content with delayed fade-in
-                FadeTransition(
-                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: const Interval(0.5, 1.0), // Delay fade-in of the page content
-                    ),
-                  ),
-                  child: child,
-                ),
-                // Five dots transition
-                Positioned.fill(
-                  child: AnimatedBuilder(
-                    animation: animation,
-                    builder: (_, child) {
-                      return Opacity(
-                        opacity: (1.0 - animation.value).clamp(0.0, 1.0),
-                        child: Center(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: List.generate(5, (index) {
-                              // Adjust delay for each dot for a total of 5 dots
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                child: _DotTransition(
-                                  animation: animation,
-                                  delay: index * 0.100, // Adjusted delay for each dot
-                                ),
-                              );
-                            }),
-                          ),
+class FiveDotsTransition {
+  static Widget Function(BuildContext, Animation<double>, Animation<double>, Widget) transitionsBuilder = (context, animation, secondaryAnimation, child) =>
+    Stack(
+      children: [
+        // Main content with delayed fade-in
+        FadeTransition(
+          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: const Interval(0.5, 1.0), // Delay fade-in of the page content
+            ),
+          ),
+          child: child,
+        ),
+        // Five dots transition
+        Positioned.fill(
+          child: AnimatedBuilder(
+            animation: animation,
+            builder: (_, child) {
+              return Opacity(
+                opacity: (1.0 - animation.value).clamp(0.0, 1.0),
+                child: Center(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(5, (index) {
+                      // Adjust delay for each dot for a total of 5 dots
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                        child: _DotTransition(
+                          animation: animation,
+                          delay: index * 0.100, // Adjusted delay for each dot
                         ),
                       );
-                    },
+                    }),
                   ),
                 ),
-              ],
-            );
-          },
-        );
+              );
+            },
+          ),
+        ),
+      ],
+    );
 }
 
 class _DotTransition extends StatelessWidget {
