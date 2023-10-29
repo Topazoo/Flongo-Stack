@@ -1,23 +1,33 @@
 import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
+import 'package:app/utilities/transitions/key_lock_transition.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends API_Page {
   @override
   final String apiURL = '/authenticate';
 
-  const LoginPage({super.key});
+  final Widget homeWidget;
+
+  const LoginPage({super.key, required this.homeWidget});
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends API_PageState {
+class _LoginPageState extends API_PageState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _errorMessage;
+
+  void _onLoginSuccess() {
+    Navigator.pushReplacement(
+      context,
+      KeyToLockPageRoute(page: widget.homeWidget),
+    );
+  }
 
   @override
   Widget getPageWidget(BuildContext context) {
@@ -52,7 +62,7 @@ class _LoginPageState extends API_PageState {
                     HTTPClient('/authenticate').login(
                       _usernameController.text,
                       _passwordController.text,
-                      (response) =>  Navigator.pushReplacementNamed(context, '/home'),
+                      (response) => _onLoginSuccess(),
                       (response) => setState(() {
                         _errorMessage = 'Failed to authenticate: ${response.body}';
                       })
