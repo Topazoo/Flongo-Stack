@@ -1,16 +1,15 @@
 import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
-import 'package:app/utilities/transitions/key_lock_transition.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends API_Page {
   @override
   final String apiURL = '/authenticate';
 
-  final Widget homeWidget;
+  final String homeURL;
 
-  const LoginPage({super.key, required this.homeWidget});
+  const LoginPage({super.key, this.homeURL='/home'});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -23,10 +22,7 @@ class _LoginPageState extends API_PageState<LoginPage> {
   String? _errorMessage;
 
   void _onLoginSuccess() {
-    Navigator.pushReplacement(
-      context,
-      KeyToLockPageRoute(page: widget.homeWidget),
-    );
+    Navigator.pushNamed(context, widget.homeURL);
   }
 
   @override

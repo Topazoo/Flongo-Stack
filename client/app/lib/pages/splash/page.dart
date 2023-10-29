@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
-  final Widget baseWidget;
+  final String baseURL;
   final String appName;
 
-  const SplashScreen({super.key, required this.appName, required this.baseWidget});
+  const SplashScreen({super.key, required this.appName, this.baseURL='/'});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -28,9 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     // Navigate to the next page after a delay
     Timer(const Duration(milliseconds: 500), () {
-      Navigator.of(context).pushReplacement(
-        FadePageTransition(page: widget.baseWidget),
-      );
+      Navigator.of(context).pushReplacementNamed(widget.baseURL);
     });
   }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class KeyToLockPageRoute extends PageRouteBuilder {
+class KeyToLockOpenPageRoute extends PageRouteBuilder {
   final Widget page;
 
-  KeyToLockPageRoute({required this.page})
+  KeyToLockOpenPageRoute({required this.page})
       : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: const Duration(milliseconds: 1200),
-          reverseTransitionDuration: const Duration(milliseconds: 200),
+          transitionDuration: const Duration(milliseconds: 600),
+          reverseTransitionDuration: const Duration(milliseconds: 100),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return AnimatedBuilder(
               animation: animation,
@@ -21,7 +21,7 @@ class KeyToLockPageRoute extends PageRouteBuilder {
                 double padlockOpacity;
 
                 // Calculate the opacity for background and padlock image
-                if (animation.value <= 0.5) {
+                if (animation.value <= 0.7) {
                   backgroundOpacity = animation.value * 0.7; // Fade to dark
                   padlockOpacity = animation.value * 2.0; // Fade in the padlock
                 } else {
@@ -53,8 +53,8 @@ class KeyToLockPageRoute extends PageRouteBuilder {
                                 Opacity(
                                   opacity: padlockOpacity.clamp(0.0, 1.0),
                                   child: AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 600),
-                                    child: animation.value > 0.5
+                                    duration: const Duration(milliseconds: 300),
+                                    child: animation.value > 0.25
                                         ? Image.asset(
                                             'assets/padlock_open.png',
                                             width: 300,

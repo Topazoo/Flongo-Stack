@@ -115,9 +115,14 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             title: const Text('Logout'),
             onTap: () {
               HTTPClient('/authenticate').logout(
-                (response) => Navigator.of(context).pushReplacementNamed('/'),
-                (response) => {}
-              );
+              (response) {
+                // Use the custom page route for the transition
+                Navigator.of(context).pushReplacementNamed('/');
+              },
+              (response) {
+                // Handle error if needed
+              },
+            );
             },
           ),
         ],

@@ -14,7 +14,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String appName = env['APP_NAME'] ?? 'App Name';
-    LoginPage loginPage = const LoginPage(homeWidget: HomePage());
+    LoginPage loginPage = const LoginPage();
 
     return MaterialApp(
       title: appName,
@@ -22,8 +22,8 @@ class App extends StatelessWidget {
         primarySwatch: AppTheme.primarySwatch,
       ),
       routes: {
-        '/_splash': (context) => SplashScreen(appName: appName, baseWidget: loginPage),
-        
+        '/_splash': (context) => SplashScreen(appName: appName),
+
         '/': (context) => loginPage,
         '/home': (context) => const HomePage(),
         '/config': (context) => const ConfigPage()
