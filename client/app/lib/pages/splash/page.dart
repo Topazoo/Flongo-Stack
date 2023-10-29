@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(_controller!);
 
     // Navigate to the next page after a delay
-    Timer(Duration(milliseconds: 500), () {
+    Timer(const Duration(milliseconds: 500), () {
       Navigator.of(context).pushReplacement(
         FadePageTransition(page: widget.baseWidget),
       );
@@ -63,10 +63,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Image.asset('assets/gear.png'),
                 ),
               ),
-              SizedBox(height: 20), // Spacing between the gear and text
+              const SizedBox(height: 20), // Spacing between the gear and text
               Text(
                 "Loading: ${widget.appName}",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
           ),
