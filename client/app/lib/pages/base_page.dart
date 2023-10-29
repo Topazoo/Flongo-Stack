@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class BasePage extends StatefulWidget {
-  final bool authenticationRequired;
+  final bool authenticationRequired = false;
 
-  const BasePage({Key? key, this.authenticationRequired = false}) : super(key: key);
+  const BasePage({super.key});
 }
 
 abstract class BasePageState<T extends BasePage> extends State<T> {
   static final env = dotenv.env;
+  bool isLoading = false;
+  String error = '';
 
   @override
   void initState() {
@@ -24,7 +26,26 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   }
 
   @protected
-  Widget buildContent(BuildContext context);
+  Widget getPageWidget(BuildContext context);
+
+  @protected
+  Widget getPageLoadingWidget(BuildContext context) => const CircularProgressIndicator();
+
+  @protected
+  Widget getPageErrorWidget(BuildContext context) => Text(error);
+
+  @protected
+  Widget _getPageWidget(BuildContext context) {
+    if (isLoading) {
+      return getPageLoadingWidget(context);
+    }
+
+    if (error.isNotEmpty) {
+      return getPageErrorWidget(context);
+    }
+
+    return getPageWidget(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +62,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
         ),
         actions: _buildAppBarActions(context),
       ),
-      body: Center(child: buildContent(context)),
+      body: Center(child: _getPageWidget(context)),
       drawer: _buildNavBar(context),
       bottomNavigationBar: _buildFooter(),
     );
@@ -105,30 +126,42 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   }
 
   Widget _buildFooter() {
+    bool isSmallScreen = MediaQuery.of(context).size.width < 600; // Define your breakpoint for smaller displays
+
+    Widget footerContent = Wrap(
+      alignment: isSmallScreen ? WrapAlignment.center : WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: _buildFooterChildren(),
+    );
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: isSmallScreen ? const EdgeInsets.all(10) : const EdgeInsets.all(20),
       color: AppTheme.accentTextColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: footerContent,
+    );
+  }
+
+  List<Widget> _buildFooterChildren() {
+    return [
+      Text(
+        '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+      const SizedBox(height: 10),
+      Row(
+        mainAxisSize: MainAxisSize.min, // Ensures the row takes minimum space required
         children: [
-          Text(
-            '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+          TextButton(
+            child: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
+            onPressed: () {},
           ),
-          Row(
-            children: [
-              TextButton(
-                child: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
-                onPressed: () {},
-              ),
-              TextButton(
-                child: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
-                onPressed: () {},
-              ),
-            ],
+          TextButton(
+            child: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
+            onPressed: () {},
           ),
         ],
       ),
-    );
+    ];
   }
+
 }

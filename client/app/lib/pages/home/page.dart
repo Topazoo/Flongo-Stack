@@ -3,18 +3,18 @@ import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends BasePage {
+  @override
+  final bool authenticationRequired = true;
 
-  const HomePage({Key? key, bool authenticationRequired = false})
-    : super(key: key, authenticationRequired: authenticationRequired);
+  const HomePage({super.key});
 
   @override
   HomePageState createState() => HomePageState();
 }
 
 class HomePageState extends BasePageState {
-
   @override
-  Widget buildContent(BuildContext context) {
+  Widget getPageWidget(BuildContext context) {
     return Text('Welcome Home: ${HTTPClient.getIdentity()}');
   }
 }

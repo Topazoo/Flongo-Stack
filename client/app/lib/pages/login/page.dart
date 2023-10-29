@@ -1,27 +1,28 @@
-import 'package:app/pages/http_page.dart';
+import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends HTTP_Page {
+class LoginPage extends API_Page {
+  @override
+  final String apiURL = '/authenticate';
 
-  LoginPage({Key? key, required String apiURL, bool authenticationRequired = false})
-      : super(key: key, apiURL:apiURL, authenticationRequired: authenticationRequired);
+  const LoginPage({super.key});
 
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends HTTP_PageState {
+class _LoginPageState extends API_PageState {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   String? _errorMessage;
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget getPageWidget(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(200.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
         child: Form(
           key: _formKey,
           child: Column(
