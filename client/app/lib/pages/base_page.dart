@@ -126,30 +126,42 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   }
 
   Widget _buildFooter() {
+    bool isSmallScreen = MediaQuery.of(context).size.width < 600; // Define your breakpoint for smaller displays
+
+    Widget footerContent = Wrap(
+      alignment: isSmallScreen ? WrapAlignment.center : WrapAlignment.spaceBetween,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: _buildFooterChildren(),
+    );
+
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: isSmallScreen ? const EdgeInsets.all(10) : const EdgeInsets.all(20),
       color: AppTheme.accentTextColor,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: footerContent,
+    );
+  }
+
+  List<Widget> _buildFooterChildren() {
+    return [
+      Row(
+        mainAxisSize: MainAxisSize.min, // Ensures the row takes minimum space required
         children: [
-          Text(
-            '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
-            style: const TextStyle(color: Colors.white, fontSize: 14),
+          TextButton(
+            child: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
+            onPressed: () {},
           ),
-          Row(
-            children: [
-              TextButton(
-                child: const Text('Terms of Service', style: TextStyle(color: Colors.white)),
-                onPressed: () {},
-              ),
-              TextButton(
-                child: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
-                onPressed: () {},
-              ),
-            ],
+          TextButton(
+            child: const Text('Privacy Policy', style: TextStyle(color: Colors.white)),
+            onPressed: () {},
           ),
         ],
       ),
-    );
+      const SizedBox(height: 10), 
+      Text(
+        '© ${DateTime.now().year} ${env['APP_AUTHOR'] ?? 'Anonymous'}',
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+      ),
+    ];
   }
+
 }

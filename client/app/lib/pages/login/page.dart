@@ -22,7 +22,7 @@ class _LoginPageState extends API_PageState {
   @override
   Widget getPageWidget(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(200.0),
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
         child: Form(
           key: _formKey,
           child: Column(
