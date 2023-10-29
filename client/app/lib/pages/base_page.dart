@@ -1,5 +1,6 @@
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
+import 'package:app/utilities/transitions/key_lock_closed_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -115,9 +116,17 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             title: const Text('Logout'),
             onTap: () {
               HTTPClient('/authenticate').logout(
-                (response) => Navigator.of(context).pushReplacementNamed('/'),
-                (response) => {}
-              );
+              (response) {
+                Navigator.pushNamed(
+                  context, 
+                  '/',
+                  arguments: {"_animation": KeyToLockClosedPageRoute.transitionsBuilder}
+                );
+              },
+              (response) {
+                // Handle error if needed
+              },
+            );
             },
           ),
         ],
