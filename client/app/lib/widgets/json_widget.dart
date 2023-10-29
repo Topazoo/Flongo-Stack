@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class JSONWidget extends StatefulWidget {
   final dynamic data;
   final String apiURL;
+  final Future<void> Function()? onRefresh;
 
   const JSONWidget({
     Key? key,
     required this.data,
-    required this.apiURL
+    required this.apiURL,
+    this.onRefresh
   }) : super(key: key);
 
   @override
@@ -18,6 +20,7 @@ class JSONWidget extends StatefulWidget {
 
 class JSONWidgetState extends State<JSONWidget> {
   late dynamic data; // Can be a Map (JSON) or List (list of JSON)
+  String currentSearchTerm = "";
 
   @override
   void initState() {
@@ -26,6 +29,8 @@ class JSONWidgetState extends State<JSONWidget> {
   }
 
   void filterData(String query) {
+    currentSearchTerm = query;
+
     if (data is List) {
       setState(() {
         data = query.isEmpty ? widget.data : filter(data, query);
@@ -34,6 +39,10 @@ class JSONWidgetState extends State<JSONWidget> {
   }
 
   List filter(List data, String query) {
+    if (query.isEmpty) {
+      return data;
+    }
+
     return data.where((item) {
       return item['name']?.toLowerCase().contains(query.toLowerCase()) ?? false;
     }).toList();

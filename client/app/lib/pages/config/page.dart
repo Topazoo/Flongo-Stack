@@ -18,5 +18,9 @@ class ConfigPage extends JSON_Page {
 
 class _ConfigPageState extends JSON_PageState {
   @override
-  Widget getPageWidget(BuildContext context) => ConfigJSONWidget(data: data, apiURL: widget.apiURL);
+  Widget getPageWidget(BuildContext context) => ConfigJSONWidget(
+    data: data, 
+    apiURL: widget.apiURL,
+    onRefresh: fetchData
+  );
 }

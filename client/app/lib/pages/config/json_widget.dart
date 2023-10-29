@@ -1,18 +1,31 @@
 import 'package:app/widgets/json_widget.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class ConfigJSONWidget extends JSONWidget {
-  const ConfigJSONWidget({Key? key, required data, required apiURL}) : super(
+  const ConfigJSONWidget({Key? key, required data, required apiURL, onRefresh}) : super(
     key: key, 
     data: data, 
-    apiURL: apiURL
+    apiURL: apiURL,
+    onRefresh: onRefresh
   );
 
   @override
   _ConfigJSONWidgetState createState() => _ConfigJSONWidgetState();
 }
 
+class MouseScrollBehavior extends MaterialScrollBehavior {
+  // Override behavior methods and getters like dragDevices
+  @override
+  Set<PointerDeviceKind> get dragDevices => { 
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.trackpad
+  };
+}
+
 class _ConfigJSONWidgetState extends JSONWidgetState {
+  final ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +42,20 @@ class _ConfigJSONWidgetState extends JSONWidgetState {
           ),
         ),
         Expanded(
-          child: ListView.builder(
+        child: RefreshIndicator(
+          onRefresh: () async {
+            if (widget.onRefresh != null) {
+              await widget.onRefresh!();
+              setState(() {
+                data = filter(widget.data, currentSearchTerm);
+              });
+            }
+            return Future.value();
+          },
+          child: ScrollConfiguration(
+            behavior: MouseScrollBehavior(),
+            child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: data.length,
             itemBuilder: (BuildContext context, int index) {
               var item = data[index];
@@ -52,8 +78,8 @@ class _ConfigJSONWidgetState extends JSONWidgetState {
                 ),
               );
             },
-          ),
-        ),
+          )),
+        )),
       ],
     );
   }
