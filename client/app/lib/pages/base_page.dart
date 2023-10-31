@@ -1,6 +1,6 @@
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
-import 'package:app/utilities/transitions/key_lock_closed_transition.dart';
+import 'package:app/utilities/transitions/fade_to_black_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -96,7 +96,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
             title: const Text('Home'),
             onTap: () {
               if (!['/', '/home'].contains(ModalRoute.of(context)?.settings.name)) {
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed('/home', arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400});
               }
             },
           ),
@@ -106,7 +106,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
               title: const Text('Config'),
               onTap: () {
                 if (ModalRoute.of(context)?.settings.name != '/config') {
-                  Navigator.of(context).pushReplacementNamed('/config');
+                  Navigator.of(context).pushReplacementNamed('/config', arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400});
                 }
               },
             ),
@@ -120,7 +120,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
                 Navigator.pushNamed(
                   context, 
                   '/',
-                  arguments: {"_animation": KeyToLockClosedPageRoute.transitionsBuilder}
+                  arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 800}
                 );
               },
               (response) {

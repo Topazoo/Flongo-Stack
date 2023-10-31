@@ -1,8 +1,9 @@
 import 'package:app/pages/api_page.dart';
 import 'package:app/styles/theme.dart';
 import 'package:app/utilities/http_client.dart';
-import 'package:app/utilities/transitions/key_lock_open_transition.dart';
+import 'package:app/utilities/transitions/fade_to_black_transition.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LoginPage extends API_Page {
   @override
@@ -16,33 +17,58 @@ class LoginPage extends API_Page {
   _LoginPageState createState() => _LoginPageState();
 }
 
-class _LoginPageState extends API_PageState<LoginPage> {
+class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  late AnimationController _logoAnimationController = AnimationController(vsync: this);
   String? _errorMessage;
 
+  @override
+  void initState() {
+    super.initState();
+    _logoAnimationController = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+  }
+
+  @override
+  void dispose() {
+    _logoAnimationController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   void _onLoginSuccess() {
-    Navigator.pushNamed(
-      context, 
-      widget.homeURL, 
-      arguments: {"_animation": KeyToLockOpenPageRoute.transitionsBuilder}
-    );
+    _logoAnimationController.forward().then((_) {
+      Navigator.pushNamed(
+        context,
+        widget.homeURL,
+        arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 600}
+      );
+    });
   }
 
   @override
   Widget getPageWidget(BuildContext context) {
     return Padding(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.1),
+        padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: MediaQuery.of(context).size.width * 0.1),
         child: Form(
           key: _formKey,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               if (_errorMessage != null) ...[
                 Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
                 const SizedBox(height: 16.0),
               ],
+              const SizedBox(height: 16.0),
+              Lottie.asset(
+                'assets/logo_animation.json',
+                controller: _logoAnimationController,
+                height: 240, 
+                width: 240,
+                animate: false,
+              ),
               TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(labelText: 'Username'),
