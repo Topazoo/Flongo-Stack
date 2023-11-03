@@ -31,6 +31,11 @@ class HTTPClient {
 
     if (_csrfCookie != null) {
       _setCSRFCookie(_csrfCookie!);
+    } else {
+      String? csrfCookie = getCSRFCookie();
+      if (csrfCookie != null && csrfCookie.isNotEmpty) {
+        _setCSRFCookie(csrfCookie);
+      }
     }
   }
 
@@ -159,32 +164,17 @@ class HTTPClient {
 
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
-    String? accessTokenCookie = _parseCookieToken(rawCookie);
+    String? accessTokenCookie = parseCookieToken(rawCookie);
     if (accessTokenCookie != null && accessTokenCookie.isNotEmpty) {
       _setAccessCookie(accessTokenCookie);
       _setIdentityData(parseIdentityAndRole(rawCookie));
 
-      String? csrfTokenCookie = _parseCookieToken(rawCookie, cookieName: "csrf_access_token");
+      String? csrfTokenCookie = parseCookieToken(rawCookie, cookieName: "csrf_access_token");
       if (csrfTokenCookie != null && csrfTokenCookie.isNotEmpty) {
         _setCSRFCookie(csrfTokenCookie.split("=")[1]);
       }
     }
   }
-
-  String? _parseCookieToken(String? cookieHeader, {String cookieName='access_token_cookie'}) {
-    if (cookieHeader != null) {
-      int startIndex = cookieHeader.indexOf(cookieName);
-      if (startIndex >= 0) {
-        String fromCookie = cookieHeader.substring(startIndex);
-
-        int endIndex = fromCookie.indexOf(";");
-        return fromCookie.substring(0, endIndex);
-      }
-    }
-
-    return null;
-  }
-
 
   Map<String, String> setJSONContentTypeHeader(Map<String, dynamic>? body) {
     if (body != null) {
