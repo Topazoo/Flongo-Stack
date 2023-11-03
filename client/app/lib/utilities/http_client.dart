@@ -16,42 +16,48 @@ class HTTPClient {
     'accept': 'application/json',
   };
 
-  static String? _cookie;
+  static String? _accessCookie;
+  static String? _csrfCookie;
   static String? _identity;
   static List<String>? _roles;
 
-  HTTPClient(String url, {String? csrfToken})
+  HTTPClient(String url)
         : baseUrl = '${env['APP_API_URL']}/${url.startsWith("/") ? url.substring(1) : url}',
         timeoutDuration = Duration(milliseconds: int.parse(env['APP_API_TIMEOUT_MS'] ?? '3000')) {
 
-    // TODO - Store this - it won't work this way
-    if (csrfToken != null) {
-      _headers['X-CSRF-TOKEN'] = csrfToken;
+    if (_accessCookie != null) {
+      _setAccessCookie(_accessCookie!);
     }
 
-    if (_cookie != null) {
-      _setCookie(_cookie!);
+    if (_csrfCookie != null) {
+      _setCSRFCookie(_csrfCookie!);
     }
   }
 
+  void _setAccessCookie(String cookie) {
+    _accessCookie = cookie;
+    _headers['cookie'] = cookie;
+  }
+
+  void _setCSRFCookie(String cookie) {
+    _csrfCookie = cookie;
+    _headers['X-CSRF-TOKEN'] = cookie;
+  }
+
   static void deAuthenticate() {
-    _cookie = null;
+    _accessCookie = null;
     _identity = null;
     _roles = null;
 
     _headers.remove('cookie');
-  }
-
-  void _setCookie(String cookie) {
-    _cookie = cookie;
-    _headers['cookie'] = cookie;
+    _headers.remove('X-CSRF-TOKEN');
   }
 
   static bool isAuthenticated() {
     // If there is a cookie set for the application or an identity cookie present in
     // the browser cookies
 
-    if (_cookie != null) {
+    if (_accessCookie != null) {
       return true;
     }
 
@@ -153,12 +159,32 @@ class HTTPClient {
 
   void _updateCookie(http.Response response) {
     String? rawCookie = response.headers['set-cookie'];
-    if (rawCookie != null) {
-      int index = rawCookie.indexOf(';');
-      _setCookie((index == -1) ? rawCookie : rawCookie.substring(0, index));
+    String? accessTokenCookie = _parseCookieToken(rawCookie);
+    if (accessTokenCookie != null && accessTokenCookie.isNotEmpty) {
+      _setAccessCookie(accessTokenCookie);
       _setIdentityData(parseIdentityAndRole(rawCookie));
+
+      String? csrfTokenCookie = _parseCookieToken(rawCookie, cookieName: "csrf_access_token");
+      if (csrfTokenCookie != null && csrfTokenCookie.isNotEmpty) {
+        _setCSRFCookie(csrfTokenCookie.split("=")[1]);
+      }
     }
   }
+
+  String? _parseCookieToken(String? cookieHeader, {String cookieName='access_token_cookie'}) {
+    if (cookieHeader != null) {
+      int startIndex = cookieHeader.indexOf(cookieName);
+      if (startIndex >= 0) {
+        String fromCookie = cookieHeader.substring(startIndex);
+
+        int endIndex = fromCookie.indexOf(";");
+        return fromCookie.substring(0, endIndex);
+      }
+    }
+
+    return null;
+  }
+
 
   Map<String, String> setJSONContentTypeHeader(Map<String, dynamic>? body) {
     if (body != null) {
