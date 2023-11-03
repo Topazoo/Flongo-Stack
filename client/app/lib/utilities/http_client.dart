@@ -127,6 +127,7 @@ class HTTPClient {
         }
       },
       onError: (response) {
+        deAuthenticate();
         onError?.call(response);
       }
     );
