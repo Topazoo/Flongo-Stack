@@ -1,28 +1,25 @@
-import 'package:app/app_router.dart';
+import 'package:app/pages/config/page.dart';
+import 'package:app/pages/home/page.dart';
+import 'package:app/pages/login/page.dart';
+import 'package:app/pages/splash/page.dart';
+import 'package:app/theme.dart';
+
+import 'package:flongo_client/app.dart';
+import 'package:flongo_client/app_router.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-class FlongoApp extends StatelessWidget {
-  static final env = dotenv.env;
+final FlongoApp flongoApp = FlongoApp(
 
-  final String initialRoute;
-  final AppRouter router;
-  final ThemeData appTheme;
+  router: AppRouter(
+    routeBuilders: {
+      '/': (context, args) => const LoginPage(),
+      '/home': (context, args) => const HomePage(),
+      '/config': (context, args) => const ConfigPage(),
+      '/_splash': (context, args) => const SplashScreen(),
+    },
+  ),
 
-  const FlongoApp({
-    Key? key,
-    required this.router,
-    required this.initialRoute,
-    required this.appTheme,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: env['APP_NAME'] ?? 'App Name',
-      theme: appTheme,
-      onGenerateRoute: router.generateRoute,
-      initialRoute: initialRoute,
-    );
-  }
-}
+  initialRoute: '/_splash',
+  
+  appTheme: ThemeData(primarySwatch: AppTheme.primarySwatch),
+);

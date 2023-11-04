@@ -1,8 +1,7 @@
-import 'package:app/utilities/transitions/fade_page_transition.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flongo_client/utilities/transitions/fade_page_transition.dart';
 
 class SplashScreen extends StatefulWidget {
   final String baseURL;
@@ -65,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 child: SizedBox(
                   width: 100.0, // Adjust the size of the gear
                   height: 100.0, // Adjust the size of the gear
-                  child: Image.asset('assets/gear.png'),
+                  child: Image.asset('assets/images/gear.png'),
                 ),
               ),
               const SizedBox(height: 20), // Spacing between the gear and text

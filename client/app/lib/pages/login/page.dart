@@ -1,9 +1,10 @@
-import 'package:app/pages/api_page.dart';
-import 'package:app/styles/theme.dart';
-import 'package:app/utilities/http_client.dart';
-import 'package:app/utilities/transitions/fade_to_black_transition.dart';
+import 'package:flongo_client/pages/api_page.dart';
+import 'package:flongo_client/utilities/http_client.dart';
+import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../theme.dart';
 
 class LoginPage extends API_Page {
   @override
@@ -63,7 +64,7 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
               ],
               const SizedBox(height: 16.0),
               Lottie.asset(
-                'assets/logo_animation.json',
+                'assets/images/logo_animation.json',
                 controller: _logoAnimationController,
                 height: 240, 
                 width: 240,

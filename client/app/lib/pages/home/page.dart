@@ -1,5 +1,6 @@
-import 'package:app/pages/base_page.dart';
-import 'package:app/utilities/http_client.dart';
+
+import 'package:flongo_client/pages/base_page.dart';
+import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends BasePage {
