@@ -2,17 +2,21 @@ import 'package:app/utilities/transitions/fade_page_transition.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class SplashScreen extends StatefulWidget {
   final String baseURL;
-  final String appName;
+  final String? appName;
 
-  const SplashScreen({super.key, required this.appName, this.baseURL='/'});
+  const SplashScreen({super.key, this.appName, this.baseURL='/'});
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  static final env = dotenv.env;
+  
   AnimationController? _controller;
   late Animation<double> _fadeAnimation;
 
@@ -66,7 +70,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               ),
               const SizedBox(height: 20), // Spacing between the gear and text
               Text(
-                "Loading: ${widget.appName}",
+                "Loading: ${widget.appName ?? env['APP_NAME'] ?? 'App Name'}",
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ],
