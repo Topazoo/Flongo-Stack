@@ -1,4 +1,5 @@
-import 'package:app/widgets/json_list_widget.dart';
+
+import 'package:flongo_client/widgets/json_list_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 

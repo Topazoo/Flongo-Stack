@@ -1,6 +1,8 @@
-import 'package:app/pages/config/json_widget.dart';
-import 'package:app/pages/json_page.dart';
+
+import 'package:flongo_client/pages/json_page.dart';
 import 'package:flutter/material.dart';
+
+import 'json_widget.dart';
 
 class ConfigPage extends JSON_Page {
   @override
