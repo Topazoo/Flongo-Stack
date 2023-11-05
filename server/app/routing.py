@@ -57,4 +57,15 @@ APP_ROUTES = App_Routes(
         response_transformer=USER_ROUTE_RESPONSE_TRANSFORMER,
         log_level=LOG_LEVELS.DEBUG
     ),
+
+    # Admin user management
+    Route(
+        url='/users',
+        handler=Default_Route_Handler(),
+        permissions=Route_Permissions(GET='admin', POST='admin', PUT='admin', PATCH='admin', DELETE='admin'),
+        collection_name='users',
+        request_transformer=USER_ROUTE_REQUEST_TRANSFORMER,
+        response_transformer=USER_ROUTE_RESPONSE_TRANSFORMER,
+        log_level=LOG_LEVELS.DEBUG
+    ),
 )
