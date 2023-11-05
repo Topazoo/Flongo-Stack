@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import '../../navbar.dart';
 import 'json_widget.dart';
 
-class ConfigPage extends JSON_Page {
+class UsersPage extends JSON_Page {
   @override
-  final String apiURL = '/config';
+  final String apiURL = '/users';
   @override
   final bool fetchOnLoad = true;
   @override
@@ -16,15 +16,15 @@ class ConfigPage extends JSON_Page {
   @override
   final AppNavBar navbar = NavBar();
 
-  ConfigPage({super.key});
+  UsersPage({super.key});
 
   @override
-  _ConfigPageState createState() => _ConfigPageState();
+  _UsersPagePageState createState() => _UsersPagePageState();
 }
 
-class _ConfigPageState extends JSON_PageState {
+class _UsersPagePageState extends JSON_PageState {
   @override
-  Widget getPageWidget(BuildContext context) => ConfigJSONWidget(
+  Widget getPageWidget(BuildContext context) => UsersJSONWidget(
     data: data, 
     apiURL: widget.apiURL,
     onRefresh: fetchData

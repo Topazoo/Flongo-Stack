@@ -1,10 +1,19 @@
 from flongo_framework.api.routing import App_Routes, Route, Route_Handler, Default_Route_Handler
-from flongo_framework.api.routing.utils import Authentication_Util
+
 from flongo_framework.api.routing.route_permissions import Route_Permissions
-
 from flongo_framework.api.responses import API_Message_Response
-
 from flongo_framework.config.enums.logs.log_levels import LOG_LEVELS
+
+# User Management
+from .routes.user.route import UserRouteHandler
+from .routes.user.schema import  USER_ROUTE_REQUEST_SCHEMA
+from .routes.user.transformer import USER_ROUTE_REQUEST_TRANSFORMER, USER_ROUTE_RESPONSE_TRANSFORMER
+
+# User Authentication
+from .routes.authenticate.route import AuthenticateRouteHandler
+from .routes.authenticate.schema import AUTHENTICATION_ROUTE_REQUEST_SCHEMA
+from .routes.authenticate.transformer import AUTHENTICATION_ROUTE_RESPONSE_TRANSFORMER
+
 
 # Application Endpoints/Routes
 APP_ROUTES = App_Routes(
@@ -20,17 +29,11 @@ APP_ROUTES = App_Routes(
     # Authentication
     Route(
         url='/authenticate',
-        handler=Route_Handler(
-            POST=lambda request: Authentication_Util.set_identity_cookies(
-                response=API_Message_Response("Logged in!"),
-                _id=request.payload.get("username", "Test Username"),
-                roles="admin"
-            ),
-            DELETE=lambda request: Authentication_Util.unset_identity_cookies(
-                response=API_Message_Response("Logged out!"),
-            )
-        ),
+        handler=AuthenticateRouteHandler(),
         permissions=Route_Permissions(DELETE=['user', 'admin']),
+        collection_name='users',
+        request_schema=AUTHENTICATION_ROUTE_REQUEST_SCHEMA,
+        response_transformer=AUTHENTICATION_ROUTE_RESPONSE_TRANSFORMER,
         log_level=LOG_LEVELS.DEBUG
     ),
 
@@ -38,14 +41,31 @@ APP_ROUTES = App_Routes(
     Route(
         url='/config',
         handler=Default_Route_Handler(),
-        permissions=Route_Permissions(
-            GET='admin',
-            POST='admin',
-            PUT='admin',
-            PATCH='admin',
-            DELETE='admin'
-        ),
+        permissions=Route_Permissions(GET='admin', POST='admin', PUT='admin', PATCH='admin', DELETE='admin'),
         collection_name='config',
+        log_level=LOG_LEVELS.DEBUG
+    ),
+
+    # User Management
+    Route(
+        url='/user',
+        handler=UserRouteHandler(PUT=None),
+        permissions=Route_Permissions(GET=['user', 'admin'], PATCH=['user', 'admin'], DELETE=['user', 'admin']),
+        collection_name='users',
+        request_schema=USER_ROUTE_REQUEST_SCHEMA,
+        request_transformer=USER_ROUTE_REQUEST_TRANSFORMER,
+        response_transformer=USER_ROUTE_RESPONSE_TRANSFORMER,
+        log_level=LOG_LEVELS.DEBUG
+    ),
+
+    # Admin user management
+    Route(
+        url='/users',
+        handler=Default_Route_Handler(),
+        permissions=Route_Permissions(GET='admin', POST='admin', PUT='admin', PATCH='admin', DELETE='admin'),
+        collection_name='users',
+        request_transformer=USER_ROUTE_REQUEST_TRANSFORMER,
+        response_transformer=USER_ROUTE_RESPONSE_TRANSFORMER,
         log_level=LOG_LEVELS.DEBUG
     ),
 )

@@ -1,18 +1,24 @@
+import 'dart:convert';
+
 import 'package:flongo_client/pages/api_page.dart';
 import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
+import 'package:flongo_client/widgets/navbar/app_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../navbar.dart';
 import '../../theme.dart';
 
 class LoginPage extends API_Page {
   @override
   final String apiURL = '/authenticate';
+  @override
+  final AppNavBar navbar = NavBar();
 
   final String homeURL;
 
-  const LoginPage({super.key, this.homeURL='/home'});
+  LoginPage({super.key, this.homeURL='/home'});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -92,7 +98,11 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
                       _passwordController.text,
                       (response) => _onLoginSuccess(),
                       (response) => setState(() {
-                        _errorMessage = 'Failed to authenticate: ${response.body}';
+                        if (response != null && response.body != null) {
+                           _errorMessage = jsonDecode(response.body)['error'];
+                        } else {
+                          _errorMessage = 'Failed to authenticate: ${response.body}';
+                        }
                       })
                     );
                   }

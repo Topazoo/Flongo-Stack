@@ -2,6 +2,7 @@ import 'package:app/pages/config/page.dart';
 import 'package:app/pages/home/page.dart';
 import 'package:app/pages/login/page.dart';
 import 'package:app/pages/splash/page.dart';
+import 'package:app/pages/users/page.dart';
 import 'package:app/theme.dart';
 
 import 'package:flongo_client/app.dart';
@@ -12,9 +13,10 @@ final FlongoApp flongoApp = FlongoApp(
 
   router: AppRouter(
     routeBuilders: {
-      '/': (context, args) => const LoginPage(),
-      '/home': (context, args) => const HomePage(),
-      '/config': (context, args) => const ConfigPage(),
+      '/': (context, args) => LoginPage(),
+      '/home': (context, args) => HomePage(),
+      '/config': (context, args) => ConfigPage(),
+      '/users': (context, args) => UsersPage(),
       '/_splash': (context, args) => const SplashScreen(),
     },
   ),
