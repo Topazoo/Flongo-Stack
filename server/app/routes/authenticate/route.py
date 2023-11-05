@@ -19,7 +19,7 @@ class AuthenticateRouteHandler(Route_Handler):
         if not (user := request.run_mongo_operation(op='find_one')):
             raise API_Error_Message(f"Username [{username}] not found!", status_code=404)
         
-        if not (Authentication_Util.validate_password(user.get('password'), raw_pw)):
+        if not (Authentication_Util.validate_password(raw_pw, user.get('password'))):
             raise API_Error_Message(f"Invalid password for [{username}]!", status_code=401)
 
         return Authentication_Util.set_identity_cookies(response=API_JSON_Response(user),
