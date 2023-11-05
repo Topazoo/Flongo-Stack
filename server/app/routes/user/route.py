@@ -8,9 +8,7 @@ class UserRouteHandler(Default_Route_Handler):
     def _check_identity(self, request:App_Request):
         ''' Ensures the _id passed in the payload matches the passed identity or is an admin '''
 
-        if request.is_admin_identity():
-            request.ensure_field("_id")
-        else:
+        if not request.is_admin_identity() or "_id" not in request.payload:
             request.ensure_payload_has_valid_identity()
 
 
