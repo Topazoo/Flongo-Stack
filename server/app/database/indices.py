@@ -2,5 +2,13 @@ from flongo_framework.database.mongodb.index import MongoDB_Indices, MongoDB_Ind
 
 # Application Database Indices
 INDICES = MongoDB_Indices(
-    MongoDB_Index("config", "name", properties={"unique": True})
+    # Config
+    MongoDB_Index("config", "name", properties={"unique": True}),
+    # Users
+    MongoDB_Index(
+        "users", "username", 
+        properties={"unique": True}, 
+        #compound_index=MongoDB_Index("users", "password")
+    ),
+    MongoDB_Index("users", "email_address", properties={"unique": True})
 )
