@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flongo_client/pages/api_page.dart';
 import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
@@ -92,7 +94,11 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
                       _passwordController.text,
                       (response) => _onLoginSuccess(),
                       (response) => setState(() {
-                        _errorMessage = 'Failed to authenticate: ${response.body}';
+                        if (response != null && response.body != null) {
+                           _errorMessage = jsonDecode(response.body)['error'];
+                        } else {
+                          _errorMessage = 'Failed to authenticate: ${response.body}';
+                        }
                       })
                     );
                   }

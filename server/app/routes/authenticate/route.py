@@ -22,9 +22,10 @@ class AuthenticateRouteHandler(Route_Handler):
         if not (Authentication_Util.validate_password(user.get('password'), raw_pw)):
             raise API_Error_Message(f"Invalid password for [{username}]!", status_code=401)
 
-        return Authentication_Util.set_identity_cookies(
-            response=API_JSON_Response(user),
+        return Authentication_Util.set_identity_cookies(response=API_JSON_Response(user),
             _id=str(user.get("_id")),
+            username=user.get("username"),
+            email=user.get("email_address"),
             roles=user.get("roles", "user")
         )
 
