@@ -5,8 +5,9 @@ import 'package:lottie/lottie.dart';
 class WaitingForConfirmationWidget extends StatelessWidget {
   final String emailAddress;
   final bool isConfirmed;
+  final VoidCallback onResendEmail;
   
-  const WaitingForConfirmationWidget({super.key, required this.emailAddress, this.isConfirmed = false});
+  const WaitingForConfirmationWidget({super.key, required this.emailAddress, this.isConfirmed = false, required this.onResendEmail});
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +34,20 @@ class WaitingForConfirmationWidget extends StatelessWidget {
               child: Lottie.asset('assets/animations/checkmark.json'),
             ),
           if (!isConfirmed)
-            const Column(
+            Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 15),
-                SizedBox(
+                const SizedBox(height: 15),
+                const SizedBox(
                   width: 50, // Set the width of the CircularProgressIndicator
                   height: 50, // Set the height of the CircularProgressIndicator
                   child: CircularProgressIndicator(),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
+                TextButton(
+                  onPressed: onResendEmail,
+                  child: const Text('Resend Confirmation Email'),
+                ),
               ],
             )
         ],

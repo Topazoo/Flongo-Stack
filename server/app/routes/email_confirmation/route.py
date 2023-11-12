@@ -24,7 +24,7 @@ class Email_Confirmation_Route_Handler(Route_Handler):
         try:
             with MongoDB_Database('email_confirmations') as confirmation_db:
                 token = str(confirmation_db.insert_one(
-                    {'createdOn': datetime.now(), 'user_id': ObjectId(user_id)}
+                    {'createdOn': datetime.utcnow(), 'user_id': ObjectId(user_id)}
                 ).inserted_id)
 
             Gmail_Client().send_email(
