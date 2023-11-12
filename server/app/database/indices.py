@@ -10,5 +10,7 @@ INDICES = MongoDB_Indices(
         properties={"unique": True}, 
         #compound_index=MongoDB_Index("users", "password")
     ),
-    MongoDB_Index("users", "email_address", properties={"unique": True})
+    MongoDB_Index("users", "email_address", properties={"unique": True}),
+    # Email Confirmation
+    MongoDB_Index("email_confirmations", "createdOn", properties={"expireAfterSeconds": 300}),
 )
