@@ -1,6 +1,8 @@
 '''
 Routes for /user
 '''
+from bson import ObjectId
+from flask import Response
 from flongo_framework.api.routing import Default_Route_Handler
 from flongo_framework.api.requests import App_Request
 from flongo_framework.utils.logging.loggers import RoutingLogger
@@ -17,13 +19,15 @@ class UserRouteHandler(Default_Route_Handler):
             request.ensure_payload_has_valid_identity()
 
 
-    def _send_confirmation_email(self, request:App_Request):
+    def _send_confirmation_email(self, request:App_Request, response:Response) -> Response:
         ''' Sends a confirmation email to a user email address '''
 
         email = request.payload['email_address']
         try:
             with MongoDB_Database('email_confirmations') as confirmation_db:
-                token = str(confirmation_db.insert_one({'createdOn': datetime.now()}).inserted_id)
+                token = str(confirmation_db.insert_one(
+                    {'createdOn': datetime.now(), '_id': ObjectId((response.json or {}).get('_id', ''))}
+                ).inserted_id)
 
             Gmail_Client().send_email(
                 email, 
@@ -35,14 +39,15 @@ class UserRouteHandler(Default_Route_Handler):
             RoutingLogger(request.raw_request.base_url).error(
                 f"Failed to send confirmation email to [{email}]! {e}",
             )
+        finally:
+            return response
 
 
     def POST(self, request:App_Request):
         ''' Gets a user '''
         
-        resp = super().POST(request)
-        self._send_confirmation_email(request)
-        return resp
+        response = super().POST(request)
+        return self._send_confirmation_email(request, response)
 
 
     def GET(self, request:App_Request):

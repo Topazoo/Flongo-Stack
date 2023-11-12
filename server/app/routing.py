@@ -14,6 +14,9 @@ from .routes.authenticate.route import AuthenticateRouteHandler
 from .routes.authenticate.schema import AUTHENTICATION_ROUTE_REQUEST_SCHEMA
 from .routes.authenticate.transformer import AUTHENTICATION_ROUTE_RESPONSE_TRANSFORMER
 
+# Email Confirmation
+from .routes.email_confirmation.route import Email_Confirmation_Route_Handler
+
 
 # Application Endpoints/Routes
 APP_ROUTES = App_Routes(
@@ -68,4 +71,13 @@ APP_ROUTES = App_Routes(
         response_transformer=USER_ROUTE_RESPONSE_TRANSFORMER,
         log_level=LOG_LEVELS.DEBUG
     ),
+
+    # Email Confirmation
+    Route(
+        url='/email_confirmation',
+        handler=Email_Confirmation_Route_Handler(),
+        collection_name='email_confirmations',
+        log_level=LOG_LEVELS.DEBUG
+    ),
+
 )
