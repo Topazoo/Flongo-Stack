@@ -97,7 +97,7 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      HTTPClient('/authenticate').login(
+                      HTTPClient(widget.apiURL).login(
                         _usernameController.text,
                         _passwordController.text,
                         (response) => _onLoginSuccess(),
@@ -105,7 +105,7 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
                           if (response != null && response.body != null) {
                             _errorMessage = jsonDecode(response.body)['error'];
                           } else {
-                            _errorMessage = 'Failed to authenticate: ${response.body}';
+                            _errorMessage = 'Failed to authenticate!';
                           }
                         })
                       );

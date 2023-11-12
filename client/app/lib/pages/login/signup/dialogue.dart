@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:app/pages/login/signup/confirmation.dart';
 import 'package:app/pages/login/signup/form.dart';
+import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flutter/material.dart';
 
 class SignUpDialog extends StatefulWidget {
+  final String apiURL = '/user';
   const SignUpDialog({super.key});
 
   @override
@@ -18,16 +22,23 @@ class _SignUpDialogState extends State<SignUpDialog> {
   void _submitSignUpForm(Map<String, String> signUpData) {
     _submittedEmail = signUpData['email_address'] ?? '';
 
-    // Simulate sending POST request to '/user'
-    // This is where you would call your backend API
-    Future.delayed(const Duration(seconds: 2), () {
-      setState(() {
-        // Simulate a successful sign up
-        _isWaitingForConfirmation = true;
-        _isConfirmed = false;
-      });
-      _checkEmailConfirmation();
-    });
+    HTTPClient(widget.apiURL).post(body: signUpData,
+      onSuccess: (response) {
+        setState(() {
+          // Simulate a successful sign up
+          _isWaitingForConfirmation = true;
+          _isConfirmed = false;
+        });
+        _checkEmailConfirmation();
+      },
+      onError: (response) => setState(() {
+        if (response != null && response.body != null) {
+          _errorMessage = jsonDecode(response.body)['error'];
+        } else {
+          _errorMessage = 'Failed to create user';
+        }
+      })
+    );
   }
 
   void _checkEmailConfirmation() {

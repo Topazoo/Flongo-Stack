@@ -31,8 +31,10 @@ class SignUpForm extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (errorMessage != null) 
-                  Text(errorMessage!, style: const TextStyle(color: Colors.red)),
-                // Optionally, add a logo here
+                  ...[
+                    Text(errorMessage!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 30),
+                  ],
                 SvgPicture.asset('assets/images/logo_growing.svg', width: 100, height: 100),
                 TextFormField(
                   controller: _emailController,
