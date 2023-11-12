@@ -5,7 +5,7 @@ from bson import ObjectId
 FIXTURES = MongoDB_Fixtures(
     MongoDB_Fixture("config", {
         "_id": ObjectId("652790328c73b750984aee34"), 
-        "name": "SAMPLE_FEATURE_FLAG",
-        "value": False
+        "name": "REQUIRE_VALIDATED_EMAIL_FOR_LOGIN",
+        "value": True
     })
 )

@@ -11,6 +11,7 @@ USER_ROUTE_REQUEST_TRANSFORMER = Route_Transformer(
     POST = [
         Field_Transformer("createdOn", datetime.now, is_default=True),
         Field_Transformer("roles", lambda: ["user"], is_default=True),
+        Field_Transformer("is_email_validated", lambda: False, is_default=True),
         Field_Transformer("password", Authentication_Util.hash_password),
     ],
     PATCH = [
