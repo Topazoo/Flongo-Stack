@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 141.38 263.75">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #b5f9af;
+      }
+
+      .cls-2, .cls-3 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: 10px;
+      }
+
+      .cls-3 {
+        fill: none;
+      }
+    </style>
+  </defs>
+  <g id="Layer_3" data-name="Layer 3">
+    <g id="Flask">
+      <rect class="cls-3" x="26.92" y="82.94" width="87.53" height="5" rx="2.49" ry="2.49" style="stroke:#000;stroke-miterlimit:10;stroke-width:10px;fill:none;" />
+      <path d="M23.14,175.92H118.24c8.28,0,15,6.72,15,15v35.84c0,17.11-13.89,31-31,31H39.14c-17.11,0-31-13.89-31-31v-35.84c0-8.28,6.72-15,15-15Z"/>
+      <path class="cls-3" d="M5,186.97v-5.93c0-23.92,12.9-44.97,32.06-56.51-.22-.9-.33-1.83-.33-2.79v-21.79c0-6.6,5.4-12,12-12h46.02c6.6,0,12,5.4,12,12v21.79c0,1.37-.23,2.68-.66,3.9,18.18,11.74,30.28,32.22,30.28,55.39v5.93m0,0v24.11c0,26.22-21.4,47.67-47.56,47.67H52.56c-26.16,0-47.56-21.45-47.56-47.67v-24.11" style="stroke:#000;stroke-miterlimit:10;stroke-width:10px;fill:none;" />
+      <g>
+        <rect class="cls-1" x="31.86" y="183.22" width="28.1" height="9.42" rx="4.2" ry="4.2" style="fill:#fff;" />
+        <rect class="cls-1" x="31.86" y="204.97" width="28.1" height="9.42" rx="4.2" ry="4.2" style="fill:#fff;" />
+        <rect class="cls-1" x="31.86" y="226.73" width="28.1" height="9.42" rx="4.2" ry="4.2" style="fill:#fff;" />
+        <rect x="31.86" y="161.47" width="28.1" height="9.42" rx="4.2" ry="4.2"/>
+      </g>
+    </g>
+    <rect x="65.13" y="60.2" width="10.73" height="123.02" rx=".48" ry=".48"/>
+    <g>
+      <path class="cls-2" d="M83.11,43c-1.53,5.82-6.1,15.26-12.25,15.39-6.47,.13-11.82-10.15-13.33-17.43-3.53-17.06,11.12-31.68,13.33-33.82,2.35,2.52,16.8,18.52,12.25,35.86Z" style="fill:#b5f9af;stroke:#000;stroke-miterlimit:10;stroke-width:10px;" />
+      <polygon points="70.15 22.16 67.34 57.85 72.96 57.85 70.15 22.16"/>
+    </g>
+  </g>
+</svg>

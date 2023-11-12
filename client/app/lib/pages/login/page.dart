@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app/pages/login/signup/dialogue.dart';
 import 'package:flongo_client/pages/api_page.dart';
 import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
@@ -70,7 +71,7 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
               ],
               const SizedBox(height: 16.0),
               Lottie.asset(
-                'assets/images/logo_animation.json',
+                'assets/animations/logo_animation.json',
                 controller: _logoAnimationController,
                 height: 240, 
                 width: 240,
@@ -90,30 +91,45 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
                 validator: (value) => value!.isEmpty ? 'Password required' : null,
               ),
               const SizedBox(height: 50.0),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    HTTPClient('/authenticate').login(
-                      _usernameController.text,
-                      _passwordController.text,
-                      (response) => _onLoginSuccess(),
-                      (response) => setState(() {
-                        if (response != null && response.body != null) {
-                           _errorMessage = jsonDecode(response.body)['error'];
-                        } else {
-                          _errorMessage = 'Failed to authenticate: ${response.body}';
-                        }
-                      })
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.accentTextColor,
-                  minimumSize: const Size(200, 65)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      HTTPClient(widget.apiURL).login(
+                        _usernameController.text,
+                        _passwordController.text,
+                        (response) => _onLoginSuccess(),
+                        (response) => setState(() {
+                          if (response != null && response.body != null) {
+                            _errorMessage = jsonDecode(response.body)['error'];
+                          } else {
+                            _errorMessage = 'Failed to authenticate!';
+                          }
+                        })
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.accentTextColor,
+                    minimumSize: const Size(200, 65)
+                  ),
+                  child: const Text('Login'),
                 ),
-                child: const Text('Login'),
-              ),
-            ],
+                  ElevatedButton(
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => const SignUpDialog(),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.accentTextColor,
+                      minimumSize: const Size(200, 65)
+                    ),
+                    child: const Text('Sign Up'),
+                  )
+              ],
+            )],
           ),
         ),
       );
