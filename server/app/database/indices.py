@@ -12,5 +12,5 @@ INDICES = MongoDB_Indices(
     ),
     MongoDB_Index("users", "email_address", properties={"unique": True}),
     # Email Confirmation
-    MongoDB_Index("email_confirmations", "createdOn", properties={"expireAfterSeconds": 300}),
+    MongoDB_Index("email_confirmations", "createdOn", properties={"expireAfterSeconds": 600}),
 )

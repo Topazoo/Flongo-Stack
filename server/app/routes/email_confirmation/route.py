@@ -24,9 +24,25 @@ class Email_Confirmation_Route_Handler(Route_Handler):
                     return API_Message_Response('Email is already validated!')
             
         return API_Message_Response('The confirmation token is invalid or expired', 404)
+    
+
+    def POST(self, request:App_Request):
+        ''' Checks to see if an email is confirmed '''
+
+        with MongoDB_Database('users') as users:
+            if not (user := users.find_one(
+                {"username": request.payload.get("username"), "email_address": request.payload.get("email_address")},
+                {"is_email_validated": 1}
+            )):
+                return API_Message_Response(f'Email address [{request.payload.get("email_address")}] not found!',  404)
+
+            if user.get('is_email_validated'):
+                return API_Message_Response("Email validated!")
+            
+            return API_Message_Response("Email not validated!",  205)
 
     
     # Holds a reference of all methods for this route
     def __init__(self, **methods:Callable[[App_Request], Response]):
-        methods = {**{"GET": self.GET}, **methods}
+        methods = {**{"GET": self.GET, "POST": self.POST}, **methods}
         super().__init__(**methods)
