@@ -22,5 +22,5 @@ USER_ROUTE_REQUEST_TRANSFORMER = Route_Transformer(
 
 # Filter out password
 USER_ROUTE_RESPONSE_TRANSFORMER = Route_Transformer(
-    GET = [Field_Transformer("password", lambda _: None)]
+    GET = [Field_Transformer("password", lambda _: '')]
 )

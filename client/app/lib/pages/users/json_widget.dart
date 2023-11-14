@@ -1,6 +1,6 @@
 
+import 'package:app/utils/scroll_behavior.dart';
 import 'package:flongo_client/widgets/json_list_widget.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class UsersJSONWidget extends JSON_List_Widget {
@@ -13,16 +13,6 @@ class UsersJSONWidget extends JSON_List_Widget {
 
   @override
   _UsersJSONWidgetState createState() => _UsersJSONWidgetState();
-}
-
-class MouseScrollBehavior extends MaterialScrollBehavior {
-  // Override behavior methods and getters like dragDevices
-  @override
-  Set<PointerDeviceKind> get dragDevices => { 
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad
-  };
 }
 
 class _UsersJSONWidgetState extends JSONWidgetState {
