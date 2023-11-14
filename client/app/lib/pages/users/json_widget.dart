@@ -1,6 +1,6 @@
 
+import 'package:app/utils/scroll_behavior.dart';
 import 'package:flongo_client/widgets/json_list_widget.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class UsersJSONWidget extends JSON_List_Widget {
@@ -15,18 +15,20 @@ class UsersJSONWidget extends JSON_List_Widget {
   _UsersJSONWidgetState createState() => _UsersJSONWidgetState();
 }
 
-class MouseScrollBehavior extends MaterialScrollBehavior {
-  // Override behavior methods and getters like dragDevices
-  @override
-  Set<PointerDeviceKind> get dragDevices => { 
-    PointerDeviceKind.touch,
-    PointerDeviceKind.mouse,
-    PointerDeviceKind.trackpad
-  };
-}
-
 class _UsersJSONWidgetState extends JSONWidgetState {
   final ScrollController controller = ScrollController();
+
+  @override
+  List filter(List data, String query) {
+    if (query.isEmpty) {
+      return data;
+    }
+
+    return data.where((item) {
+      return (item['username']?.toLowerCase().contains(query.toLowerCase()) || 
+        item['email_address']?.toLowerCase().contains(query.toLowerCase()));
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +63,7 @@ class _UsersJSONWidgetState extends JSONWidgetState {
             itemBuilder: (BuildContext context, int index) {
               var item = data[index];
               return ListTile(
-                leading: const Icon(Icons.info),
+                leading: const Icon(Icons.person),
                 title: Text(item['username'] ?? ''),
                 subtitle: Text('${item['email_address']}'),
                 trailing: Row(

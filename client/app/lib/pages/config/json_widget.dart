@@ -61,7 +61,7 @@ class _ConfigJSONWidgetState extends JSONWidgetState {
             itemBuilder: (BuildContext context, int index) {
               var item = data[index];
               return ListTile(
-                leading: const Icon(Icons.info),
+                leading: const Icon(Icons.settings),
                 title: Text(item['name'] ?? ''),
                 subtitle: Text('${item['value']}'),
                 trailing: Row(

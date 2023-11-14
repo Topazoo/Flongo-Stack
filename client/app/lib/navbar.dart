@@ -13,18 +13,24 @@ class NavBar extends AppNavBar {
       routeArguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400},
       inaccessibleRoutes: ['/']
     ),
+    NavBarItem(
+      icon: Icons.person,
+      title: 'User',
+      routeName: '/user',
+      routeArguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400}
+    ),
 
     if (HTTPClient.isAdminAuthenticated()) ...[
-      NavBarItem(
-        icon: Icons.settings,
-        title: 'Config',
-        routeName: '/config',
-        routeArguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400}
-      ),
       NavBarItem(
         icon: Icons.people,
         title: 'Users',
         routeName: '/users',
+        routeArguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400}
+      ),
+      NavBarItem(
+        icon: Icons.settings,
+        title: 'Config',
+        routeName: '/config',
         routeArguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 400}
       ),
     ]

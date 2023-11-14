@@ -75,6 +75,34 @@ class _SignUpDialogState extends State<SignUpDialog> {
     });
   }
 
+  void _resendConfirmationEmail() {
+    HTTPClient('/email_confirmation').put(
+      body: {
+        'email_address': _submittedEmail,
+        'username': _submittedUsername,
+      },
+      onSuccess: (response) {
+        if (response.statusCode == 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Confirmation email resent to $_submittedEmail')),
+          );
+        } else {
+          // Handle non-200 response
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to resend confirmation email')),
+          );
+        }
+      },
+      onError: (response) {
+        // Handle error response
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Error in resending confirmation email')),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -83,6 +111,7 @@ class _SignUpDialogState extends State<SignUpDialog> {
         ? WaitingForConfirmationWidget(
             emailAddress: _submittedEmail,
             isConfirmed: _isConfirmed,
+            onResendEmail: _resendConfirmationEmail
           )
         : SignUpForm(onSubmit: _submitSignUpForm, errorMessage: _errorMessage),
     );
