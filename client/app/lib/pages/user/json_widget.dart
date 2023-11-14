@@ -1,18 +1,20 @@
 import 'package:app/theme.dart';
 import 'package:app/utils/scroll_behavior.dart';
+import 'package:flongo_client/widgets/json_widget.dart';
 import 'package:flutter/material.dart';
 
-class UserJSONWidget extends StatefulWidget {
+class UserJSONWidget extends JSON_Widget {
   final Map data;
   final String apiURL;
 
-  const UserJSONWidget({Key? key, required this.data, required this.apiURL}) : super(key: key);
+  const UserJSONWidget({Key? key, required this.data, required this.apiURL}) : super(key: key, data: data, apiURL: apiURL);
 
   @override
-  _UserJSONWidgetState createState() => _UserJSONWidgetState();
+  UserJSONWidgetState createState() => UserJSONWidgetState();
 }
 
-class _UserJSONWidgetState extends State<UserJSONWidget> {
+class UserJSONWidgetState extends JSON_WidgetState<UserJSONWidget> {
+  final List<String> updateFilter = ['username', 'email_address', 'createdOn', 'roles', 'is_email_validated'];
   late Map data;
 
   @override
@@ -23,36 +25,39 @@ class _UserJSONWidgetState extends State<UserJSONWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ScrollConfiguration(
-        behavior: MouseScrollBehavior(),
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10),
-              _buildUserNameAndId(),
-              _buildCreatedOn(),
-              const SizedBox(height: 8),
-              const Divider(),
-              _buildDetailRow('First Name', data['first_name']),
-              const Divider(),
-              _buildDetailRow('Last Name', data['last_name']),
-              const Divider(),
-              _buildDetailRow('Email Address', data['email_address']),
-              const Divider(),
-              _buildDetailRow('Email Validated', data['is_email_validated'].toString()),
-              const Divider(),
-              _buildDetailRow('Roles', data['roles'].join(', ')),
-              const Divider(),
-              const SizedBox(height: 15),
-              _buildActionButtons(),
-            ],
+    if(data.isNotEmpty) {
+      return Scaffold(
+        body: ScrollConfiguration(
+          behavior: MouseScrollBehavior(),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                _buildUserNameAndId(),
+                _buildCreatedOn(),
+                const SizedBox(height: 8),
+                const Divider(),
+                _buildDetailRow('First Name', data['first_name']),
+                const Divider(),
+                _buildDetailRow('Last Name', data['last_name']),
+                const Divider(),
+                _buildDetailRow('Email Address', data['email_address']),
+                const Divider(),
+                _buildDetailRow('Email Validated', data['is_email_validated'].toString()),
+                const Divider(),
+                _buildDetailRow('Roles', data['roles'].join(', ')),
+                const Divider(),
+                const SizedBox(height: 15),
+                _buildActionButtons(),
+              ],
+            ),
           ),
-        ),
-      )
-    );
+        )
+      );
+    }
+    return const Center(child: Text("User has been deleted!"));
   }
 
   Widget _buildUserNameAndId() {
@@ -102,20 +107,27 @@ class _UserJSONWidgetState extends State<UserJSONWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildButton(Icons.edit, 'Edit', Colors.blue),
-          _buildButton(Icons.delete, 'Delete', Colors.red),
+          _buildButton(Icons.edit, 'Edit', Colors.blue, ["first_name", "last_name", "password"], updateItem),
+          _buildButton(Icons.delete, 'Delete', Colors.red, ["_id"], deleteItem),
         ],
       ),
     );
   }
 
-  Widget _buildButton(IconData icon, String label, Color color) {
+  Map<String, dynamic> _buildDataSnippet(List<String> keys) {
+    Map<String, dynamic> snippet = {};
+    for (var key in keys) {
+      snippet[key] = data[key];
+    }
+
+    return snippet;
+  }
+
+  Widget _buildButton(IconData icon, String label, Color color, List<String> dataKeys, Function callback) {
     return ElevatedButton.icon(
       icon: Icon(icon, size: 20),
       label: Text(label),
-      onPressed: () {
-        // Implement your logic here
-      },
+      onPressed: () => callback(_buildDataSnippet(dataKeys)), // TODO - Allow pass of submit function
       style: ElevatedButton.styleFrom(
         backgroundColor: AppTheme.accentTextColor,
         minimumSize: const Size(200, 65)
