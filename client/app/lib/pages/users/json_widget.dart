@@ -19,6 +19,18 @@ class _UsersJSONWidgetState extends JSONWidgetState {
   final ScrollController controller = ScrollController();
 
   @override
+  List filter(List data, String query) {
+    if (query.isEmpty) {
+      return data;
+    }
+
+    return data.where((item) {
+      return (item['username']?.toLowerCase().contains(query.toLowerCase()) || 
+        item['email_address']?.toLowerCase().contains(query.toLowerCase()));
+    }).toList();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -51,7 +63,7 @@ class _UsersJSONWidgetState extends JSONWidgetState {
             itemBuilder: (BuildContext context, int index) {
               var item = data[index];
               return ListTile(
-                leading: const Icon(Icons.info),
+                leading: const Icon(Icons.person),
                 title: Text(item['username'] ?? ''),
                 subtitle: Text('${item['email_address']}'),
                 trailing: Row(
