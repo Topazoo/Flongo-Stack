@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/pages/login/signup/dialogue.dart';
+import 'package:app/utils/scroll_behavior.dart';
 import 'package:flongo_client/pages/api_page.dart';
 import 'package:flongo_client/utilities/http_client.dart';
 import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
@@ -58,80 +59,85 @@ class _LoginPageState extends API_PageState<LoginPage> with TickerProviderStateM
 
   @override
   Widget getPageWidget(BuildContext context) {
-    return Padding(
-        padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: MediaQuery.of(context).size.width * 0.1),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (_errorMessage != null) ...[
-                Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+    return ScrollConfiguration(
+      behavior: MouseScrollBehavior(),
+      child: SingleChildScrollView(
+        child:Padding(
+          padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: MediaQuery.of(context).size.width * 0.1),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                if (_errorMessage != null) ...[
+                  Text(_errorMessage!, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 16.0),
+                ],
                 const SizedBox(height: 16.0),
-              ],
-              const SizedBox(height: 16.0),
-              Lottie.asset(
-                'assets/animations/logo_animation.json',
-                controller: _logoAnimationController,
-                height: 240, 
-                width: 240,
-                animate: false,
-              ),
-              TextFormField(
-                controller: _usernameController,
-                decoration: const InputDecoration(labelText: 'Username'),
-                validator: (value) => value!.isEmpty ? 'Username required' : null,
-              ),
-              const SizedBox(height: 16.0),
-              TextFormField(
-                controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: 'Password'),
-                obscureText: true,
-                validator: (value) => value!.isEmpty ? 'Password required' : null,
-              ),
-              const SizedBox(height: 50.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      HTTPClient(widget.apiURL).login(
-                        _usernameController.text,
-                        _passwordController.text,
-                        (response) => _onLoginSuccess(),
-                        (response) => setState(() {
-                          if (response != null && response.body != null) {
-                            _errorMessage = jsonDecode(response.body)['error'];
-                          } else {
-                            _errorMessage = 'Failed to authenticate!';
-                          }
-                        })
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.accentTextColor,
-                    minimumSize: const Size(200, 65)
-                  ),
-                  child: const Text('Login'),
+                Lottie.asset(
+                  'assets/animations/logo_animation.json',
+                  controller: _logoAnimationController,
+                  height: 240, 
+                  width: 240,
+                  animate: false,
                 ),
+                TextFormField(
+                  controller: _usernameController,
+                  decoration: const InputDecoration(labelText: 'Username'),
+                  validator: (value) => value!.isEmpty ? 'Username required' : null,
+                ),
+                const SizedBox(height: 16.0),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) => value!.isEmpty ? 'Password required' : null,
+                ),
+                const SizedBox(height: 50.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
                   ElevatedButton(
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const SignUpDialog(),
-                    ),
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        HTTPClient(widget.apiURL).login(
+                          _usernameController.text,
+                          _passwordController.text,
+                          (response) => _onLoginSuccess(),
+                          (response) => setState(() {
+                            if (response != null && response.body != null) {
+                              _errorMessage = jsonDecode(response.body)['error'];
+                            } else {
+                              _errorMessage = 'Failed to authenticate!';
+                            }
+                          })
+                        );
+                      }
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.accentTextColor,
                       minimumSize: const Size(200, 65)
                     ),
-                    child: const Text('Sign Up'),
-                  )
-              ],
-            )],
+                    child: const Text('Login'),
+                  ),
+                    ElevatedButton(
+                      onPressed: () => showDialog(
+                        context: context,
+                        builder: (context) => const SignUpDialog(),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.accentTextColor,
+                        minimumSize: const Size(200, 65)
+                      ),
+                      child: const Text('Sign Up'),
+                    )
+                ],
+              )],
+            ),
           ),
-        ),
-      );
+        )
+      )
+    );
   }
 }
