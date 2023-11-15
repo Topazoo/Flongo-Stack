@@ -35,4 +35,12 @@ class NavBar extends AppNavBar {
       ),
     ]
   ];
+
+  @override
+  Widget getNavbarHeader() => UserAccountsDrawerHeader(
+    accountName: Text(HTTPClient.getUsername() ?? 'Guest'),
+    accountEmail: Text(HTTPClient.isAuthenticated() ? "Email: ${HTTPClient.getEmail() ?? 'None'}" : 'Please Login'),
+    currentAccountPicture: const CircleAvatar(backgroundColor: Colors.black38),
+    decoration: BoxDecoration(color: Colors.blueGrey[900]),
+  );
 }
