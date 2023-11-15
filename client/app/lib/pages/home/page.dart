@@ -21,6 +21,6 @@ class HomePage extends BasePage {
 class HomePageState extends BasePageState {
   @override
   Widget getPageWidget(BuildContext context) {
-    return Text('Welcome Home: ${HTTPClient.getUsername()}');
+    return Center(child: Text('Welcome Home: ${HTTPClient.getUsername()}'));
   }
 }
