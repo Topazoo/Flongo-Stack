@@ -1,5 +1,7 @@
 import 'package:app/theme.dart';
 import 'package:app/utils/scroll_behavior.dart';
+import 'package:flongo_client/utilities/http_client.dart';
+import 'package:flongo_client/utilities/transitions/fade_to_black_transition.dart';
 import 'package:flongo_client/widgets/json_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -107,8 +109,26 @@ class UserJSONWidgetState extends JSON_WidgetState<UserJSONWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildButton(Icons.edit, 'Edit', Colors.blue, ["first_name", "last_name", "password"], updateItem),
-          _buildButton(Icons.delete, 'Delete', Colors.red, ["_id"], deleteItem),
+          _buildButton(Icons.edit, 'Edit', Colors.blue, ["first_name", "last_name", "password"], updateItem, updateStateData),
+          _buildButton(Icons.delete, 'Delete', Colors.red, ["_id"], deleteItem, (Map<String, dynamic> item, dynamic response) {
+            deleteStateData(item, response);
+            HTTPClient('/authenticate').logout(
+              (response) {
+                Navigator.pushNamed(
+                  context, 
+                  '/',
+                  arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 800}
+                );
+              },
+              (response) {
+                Navigator.pushNamed(
+                  context, 
+                  '/',
+                  arguments: {"_animation": FadeToBlackTransition.transitionsBuilder, "_animation_duration": 800}
+                );
+              },
+            );
+          }),
         ],
       ),
     );
@@ -123,11 +143,11 @@ class UserJSONWidgetState extends JSON_WidgetState<UserJSONWidget> {
     return snippet;
   }
 
-  Widget _buildButton(IconData icon, String label, Color color, List<String> dataKeys, Function callback) {
+  Widget _buildButton(IconData icon, String label, Color color, List<String> dataKeys, Function callback, Function onSuccess) {
     return ElevatedButton.icon(
       icon: Icon(icon, size: 20),
       label: Text(label),
-      onPressed: () => callback(_buildDataSnippet(dataKeys)), // TODO - Allow pass of submit function
+      onPressed: () => callback(_buildDataSnippet(dataKeys), onSuccess: onSuccess), // TODO - Allow pass of submit function
       style: ElevatedButton.styleFrom(
         backgroundColor: AppTheme.accentTextColor,
         minimumSize: const Size(200, 65)
