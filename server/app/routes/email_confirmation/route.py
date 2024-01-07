@@ -1,7 +1,6 @@
 '''
 Routes for /email_confirmation
 '''
-from typing import Callable
 from bson import ObjectId
 from flask import Response
 from datetime import datetime
@@ -88,9 +87,3 @@ class Email_Confirmation_Route_Handler(Route_Handler):
             return API_Message_Response(f"Re-sent confirmation email to [{request.payload.get('email_address')}]")
 
         return API_Message_Response(f"Failed to re-send confirmation email to [{request.payload.get('email_address')}]", 500)
-
-    
-    # Holds a reference of all methods for this route
-    def __init__(self, **methods:Callable[[App_Request], Response]):
-        methods = {**{"GET": self.GET, "POST": self.POST, "PUT": self.PUT}, **methods}
-        super().__init__(**methods)
