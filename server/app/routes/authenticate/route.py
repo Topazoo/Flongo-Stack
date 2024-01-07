@@ -1,8 +1,6 @@
 '''
 Routes for /authenticate
 '''
-from typing import Callable
-from flask import Response
 from flongo_framework.api.routing import Route_Handler
 from flongo_framework.api.routing.utils import Authentication_Util
 from flongo_framework.api.requests import App_Request
@@ -44,12 +42,3 @@ class AuthenticateRouteHandler(Route_Handler):
         return Authentication_Util.unset_identity_cookies(
             response=API_Message_Response("Logged out!"),
         )
-    
-    # Holds a reference of all methods for this route
-    def __init__(self, **methods:Callable[[App_Request], Response]):
-        methods = {**{
-            "POST": self.POST,
-            "DELETE": self.DELETE
-        }, **methods}
-
-        super().__init__(**methods)
