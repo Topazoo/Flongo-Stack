@@ -85,10 +85,10 @@ packages:
     dependency: "direct main"
     description:
       name: flongo_client
-      sha256: a78030b0dcccd7ff4aaa7ddd9d3d48c579e4db76ea0478ac4b02b60c00fe8dcd
+      sha256: f545d49c89b9a81cc3ccca6b0c16c99d7334cbda0403ee8c52a110e2bd8faaa9
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.15"
+    version: "0.0.16"
   flutter:
     dependency: "direct main"
     description: flutter
