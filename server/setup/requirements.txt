@@ -1,1 +1,1 @@
-flongo-framework >= 0.3.31
+flongo-framework >= 0.3.32
